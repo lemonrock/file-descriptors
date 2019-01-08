@@ -5,7 +5,7 @@
 [package]
 name = "file-descriptors"
 description = "file-descriptors"
-keywords = ["file descriptors", "fd", "serial", "terminal", "sockets"]
+keywords = ["file-descriptors", "fd", "serial", "terminal", "sockets"]
 categories = ["asynchronous", "external-ffi-bindings", "network-programming", "os::unix-apis"]
 license = "MIT"
 authors = ["Raphael Cohn <raphael.cohn@stormmq.com>"]
