@@ -13,17 +13,9 @@
 #![feature(try_from)]
 
 
-//! #file-descriptors-epoll
-//! 
-//! A wrapper around epoll ('Event Poll') for a simple HTTPS server in Rust which supports client authentication.
+//! #file-descriptors
 //!
-//! Fully functional on Android and Linux.
-//!
-//! Mostly functional on Fuschia.
-//!
-//! Mostly functional on Illumos, a Solaris fork.
-//!
-//! Mostly functional on uclibc and emscripten.
+//! file-descriptors is a Rust crate wrapping the various kinds of file descriptors with safe abstractions, including IPv4 / IPv6 sockets, Unix domain sockets, epoll, timerfd, signalfd, eventfd, POSIX message queues, pipes, FIFOs, terminals (and serial ports), character devices, inotify, fanotify and Files.
 //!
 //!
 //! ## Supported File Descriptors
@@ -57,6 +49,7 @@
 //!
 //! ## Pipes
 //!
+//! * The use of `splice()`, `vmsplice()` and `tee()` are supported for all file descriptors where possible (including Rust's `::std::fs::File`).
 //! * To be able to use epoll with standard in (`stdin`), use `pipes_and_fifos::ReceivePipeFileDescriptor::standard_in()`.
 //! * To be able to use epoll with standard out (`stdout`), use `pipes_and_fifos::SendPipeFileDescriptor::standard_out()`.
 //! * To be able to use epoll with standard error (`stderr`), use `pipes_and_fifos::SendPipeFileDescriptor::standard_error()`.
@@ -72,6 +65,10 @@
 //! * `mknod()`.
 //! * infiniband sockets.
 //! * canbus (SocketCAN sockets and can4linux <http://can-wiki.info/can4linux/man/can4linux_8h_source.html> character device drivers).
+//!
+//! ## Licensing
+//!
+//! The license for this project is MIT.
 
 
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate arrayvec;
