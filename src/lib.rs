@@ -67,6 +67,7 @@
 //! * Receiving credentials over Unix Domain Sockets using `recvmsg()`.
 //! * `mkfifo()`.
 //! * `mknod()`.
+//! * `copy_file_range()`.
 //! * infiniband sockets.
 //! * canbus (SocketCAN sockets and can4linux <http://can-wiki.info/can4linux/man/can4linux_8h_source.html> character device drivers).
 //!
