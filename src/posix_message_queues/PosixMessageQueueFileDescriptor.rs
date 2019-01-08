@@ -36,17 +36,28 @@ impl PosixMessageQueueFileDescriptor
 {
 	/// Creates a new instance.
 	#[inline(always)]
-	pub(crate) fn new(name: &CStr, send_or_receive: PosixMessageQueueCreateSendOrReceive, open_or_create: &OpenOrCreatePosixMessageQueue) -> Result<(Self, usize, usize), CreationError>
+	pub(crate) fn new(name: &CStr, send_or_receive: PosixMessageQueueCreateSendOrReceive, open_or_create: &OpenOrCreatePosixMessageQueue) -> Result<(Self, PosixMessageQueueConstraints), CreationError>
 	{
 		match open_or_create.invoke_mq_open(send_or_receive, name)
 		{
 			Err(error) => Err(error),
+
 			Ok(this) =>
 			{
 				let attributes = this.queue_attributes();
-				let maximum_number_of_enqueued_messages = attributes.maximum_number_of_enqueued_messages();
-				let maximum_message_size_in_bytes = attributes.maximum_message_size_in_bytes();
-				Ok((this, maximum_number_of_enqueued_messages, maximum_message_size_in_bytes))
+
+				Ok
+				(
+					(
+						this,
+						PosixMessageQueueConstraints
+						{
+							maximum_number_of_enqueued_messages: attributes.maximum_number_of_enqueued_messages(),
+							maximum_message_size_in_bytes: attributes.maximum_message_size_in_bytes(),
+						}
+
+					)
+				)
 			}
 		}
 	}

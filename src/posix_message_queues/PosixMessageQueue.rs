@@ -6,7 +6,7 @@
 pub trait PosixMessageQueue: AsRawFd + IntoRawFd + Sized
 {
 	/// Creates a new instance.
-	fn new(name: &CStr, open_or_create: &OpenOrCreatePosixMessageQueue) -> Result<Self, CreationError>;
+	fn new(name: &CStr, open_or_create: &OpenOrCreatePosixMessageQueue) -> Result<(Self, PosixMessageQueueConstraints), CreationError>;
 
 	/// Removes and destroys a queue.
 	///
@@ -48,16 +48,6 @@ pub trait PosixMessageQueue: AsRawFd + IntoRawFd + Sized
 		}
 	}
 
-	/// The maximum number of enqueued messages.
-	///
-	/// Will never change; extremely efficient to use.
-	fn maximum_number_of_enqueued_messages(&self) -> usize;
-
-	/// The maximum message size in bytes.
-	///
-	/// Will never change; extremely efficient to use.
-	fn maximum_message_size_in_bytes(&self) -> usize;
-
 	/// The number of unread messages in the queue.
 	///
 	/// Requires a syscall into the kernel.
@@ -67,9 +57,9 @@ pub trait PosixMessageQueue: AsRawFd + IntoRawFd + Sized
 	///
 	/// Requires a syscall into the kernel.
 	#[inline(always)]
-	fn queue_is_full(&self) -> bool
+	fn queue_is_full(&self, posix_message_queue_constraints: &PosixMessageQueueConstraints) -> bool
 	{
-		self.queue_depth() == self.maximum_message_size_in_bytes()
+		self.queue_depth() == posix_message_queue_constraints.maximum_message_size_in_bytes
 	}
 
 	/// Is the queue empty?
@@ -85,8 +75,8 @@ pub trait PosixMessageQueue: AsRawFd + IntoRawFd + Sized
 	///
 	/// Requires a syscall into the kernel.
 	#[inline(always)]
-	fn remaining_space(&self) -> usize
+	fn remaining_space(&self, posix_message_queue_constraints: &PosixMessageQueueConstraints) -> usize
 	{
-		self.maximum_number_of_enqueued_messages() - self.queue_depth()
+		posix_message_queue_constraints.maximum_number_of_enqueued_messages - self.queue_depth()
 	}
 }

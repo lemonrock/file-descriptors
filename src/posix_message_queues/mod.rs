@@ -22,6 +22,7 @@ mod syscall;
 
 include!("PosixMessagePriority.rs");
 include!("PosixMessageQueue.rs");
+include!("PosixMessageQueueConstraints.rs");
 include!("PosixMessageQueueCreateSendOrReceive.rs");
 include!("PosixMessageQueueCreateSettings.rs");
 include!("PosixMessageQueueFileDescriptor.rs");

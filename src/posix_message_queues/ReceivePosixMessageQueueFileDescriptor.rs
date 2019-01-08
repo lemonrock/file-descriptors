@@ -4,19 +4,14 @@
 
 /// Represents a POSIX message queue instance for receiving messages.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ReceivePosixMessageQueueFileDescriptor
-{
-	message_queue_file_descriptor: PosixMessageQueueFileDescriptor,
-	maximum_number_of_enqueued_messages: usize,
-	maximum_message_size_in_bytes: usize,
-}
+pub struct ReceivePosixMessageQueueFileDescriptor(PosixMessageQueueFileDescriptor);
 
 impl AsRawFd for ReceivePosixMessageQueueFileDescriptor
 {
 	#[inline(always)]
 	fn as_raw_fd(&self) -> RawFd
 	{
-		self.message_queue_file_descriptor.as_raw_fd()
+		self.0.as_raw_fd()
 	}
 }
 
@@ -25,34 +20,22 @@ impl IntoRawFd for ReceivePosixMessageQueueFileDescriptor
 	#[inline(always)]
 	fn into_raw_fd(self) -> RawFd
 	{
-		self.message_queue_file_descriptor.into_raw_fd()
+		self.0.into_raw_fd()
 	}
 }
 
 impl PosixMessageQueue for ReceivePosixMessageQueueFileDescriptor
 {
 	#[inline(always)]
-	fn new(name: &CStr, open_or_create: &OpenOrCreatePosixMessageQueue) -> Result<Self, CreationError>
+	fn new(name: &CStr, open_or_create: &OpenOrCreatePosixMessageQueue) -> Result<(Self, PosixMessageQueueConstraints), CreationError>
 	{
-		PosixMessageQueueFileDescriptor::new(name, PosixMessageQueueCreateSendOrReceive::Receive, open_or_create).map(|(message_queue_file_descriptor, maximum_number_of_enqueued_messages, maximum_message_size_in_bytes)| Self { message_queue_file_descriptor, maximum_number_of_enqueued_messages, maximum_message_size_in_bytes })
-	}
-
-	#[inline(always)]
-	fn maximum_number_of_enqueued_messages(&self) -> usize
-	{
-		self.maximum_number_of_enqueued_messages
-	}
-
-	#[inline(always)]
-	fn maximum_message_size_in_bytes(&self) -> usize
-	{
-		self.maximum_message_size_in_bytes
+		PosixMessageQueueFileDescriptor::new(name, PosixMessageQueueCreateSendOrReceive::Receive, open_or_create).map(|(message_queue_file_descriptor, posix_message_queue_constraints)| (Self(message_queue_file_descriptor), posix_message_queue_constraints))
 	}
 
 	#[inline(always)]
 	fn queue_depth(&self) -> usize
 	{
-		self.message_queue_file_descriptor.queue_depth()
+		self.0.queue_depth()
 	}
 }
 
@@ -61,8 +44,6 @@ impl Receive for ReceivePosixMessageQueueFileDescriptor
 	#[inline(always)]
 	fn receive(&self, message_buffer: &mut [u8]) -> Result<(usize, PosixMessagePriority), StructReadError>
 	{
-		debug_assert!(message_buffer.len() >= self.maximum_message_size_in_bytes(), "message_buffer is too small to receive a message");
-
-		self.message_queue_file_descriptor.receive(message_buffer)
+		self.0.receive(message_buffer)
 	}
 }
