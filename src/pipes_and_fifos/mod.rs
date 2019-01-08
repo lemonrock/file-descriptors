@@ -14,6 +14,7 @@ use ::libc::ESPIPE;
 use ::libc::ETXTBSY;
 use ::libc::iovec;
 use ::std::ffi::CString;
+use ::std::fs::File;
 use ::std::io;
 use ::std::io::ErrorKind;
 use ::std::io::Initializer;

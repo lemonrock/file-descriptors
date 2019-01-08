@@ -3,6 +3,12 @@
 
 
 /// Marker trait for file descriptors that can send to `SendPipeFileDescriptor::splice_to()`.
+///
+/// This includes Rust's `File`.
 pub trait SpliceSender: AsRawFd
+{
+}
+
+impl SpliceSender for File
 {
 }

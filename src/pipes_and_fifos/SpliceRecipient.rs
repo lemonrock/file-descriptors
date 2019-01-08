@@ -3,6 +3,12 @@
 
 
 /// Marker trait for file descriptors that can receive from `ReceivePipeFileDescriptor::splice_from()`.
+///
+/// This includes Rust's `File`.
 pub trait SpliceRecipient: AsRawFd
+{
+}
+
+impl SpliceRecipient for File
 {
 }

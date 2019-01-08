@@ -4,7 +4,7 @@
 
 [package]
 name = "file-descriptors"
-description = "file-descriptors"
+description = "Wrapper around the common kinds of (mostly Linux) file descriptors, including sockets, pipes, FIFOs, terminals, serial ports, character devices, epoll, POSIX message queues, timerfd, eventfd, signalfd fanotify and inotify"
 keywords = ["file-descriptors", "fd", "serial", "terminal", "sockets"]
 categories = ["asynchronous", "external-ffi-bindings", "network-programming", "os::unix-apis"]
 license = "MIT"
