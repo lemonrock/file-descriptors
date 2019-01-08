@@ -17,6 +17,8 @@
 //!
 //! file-descriptors is a Rust crate wrapping the various kinds of file descriptors with safe abstractions, including IPv4 / IPv6 sockets, Unix domain sockets, epoll, timerfd, signalfd, eventfd, POSIX message queues, pipes, FIFOs, terminals (and serial ports), character devices, inotify, fanotify and Files.
 //!
+//! There is a particularly extensive and safe wrapper for signals and terminals.
+//!
 //!
 //! ## Supported File Descriptors
 //!
@@ -26,7 +28,7 @@
 //! * fanotify.
 //! * inotify.
 //! * POSIX message queues (<(https://linux.die.net/man/7/mq_overview>).
-//! * pipes_and_fifos (anonymous and named (FIFO)s), including support for splice, vmsplice and tee.
+//! * pipes and FIFOs (anonymous and named FIFOs), including support for splice, vmsplice and tee.
 //! * signalfd.
 //! * sockets (TCP, UDP and the equivalent over Unix Domain Sockets).
 //! * terminals (serial ports and modems).
