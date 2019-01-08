@@ -34,14 +34,6 @@ impl<SD: SocketData> Drop for StreamingSocketFileDescriptor<SD>
 	}
 }
 
-impl<SD: SocketData> SpliceRecipient for StreamingSocketFileDescriptor<SD>
-{
-}
-
-impl<SD: SocketData> SpliceSender for StreamingSocketFileDescriptor<SD>
-{
-}
-
 impl<SD: SocketData> AsRawFd for StreamingSocketFileDescriptor<SD>
 {
 	#[inline(always)]
@@ -49,6 +41,23 @@ impl<SD: SocketData> AsRawFd for StreamingSocketFileDescriptor<SD>
 	{
 		self.0.as_raw_fd()
 	}
+}
+
+impl<SD: SocketData> FromRawFd for StreamingSocketFileDescriptor<SD>
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(SocketFileDescriptor::from_raw_fd(fd))
+	}
+}
+
+impl<SD: SocketData> SpliceRecipient for StreamingSocketFileDescriptor<SD>
+{
+}
+
+impl<SD: SocketData> SpliceSender for StreamingSocketFileDescriptor<SD>
+{
 }
 
 impl StreamingSocketFileDescriptor<sockaddr_un>

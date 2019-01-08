@@ -24,6 +24,15 @@ impl IntoRawFd for SendAndReceivePosixMessageQueueFileDescriptor
 	}
 }
 
+impl FromRawFd for SendAndReceivePosixMessageQueueFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(PosixMessageQueueFileDescriptor::from_raw_fd(fd))
+	}
+}
+
 impl PosixMessageQueue for SendAndReceivePosixMessageQueueFileDescriptor
 {
 	#[inline(always)]

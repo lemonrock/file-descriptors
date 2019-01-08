@@ -24,6 +24,15 @@ impl<SD: SocketData> IntoRawFd for StreamingServerListenerSocketFileDescriptor<S
 	}
 }
 
+impl<SD: SocketData> FromRawFd for StreamingServerListenerSocketFileDescriptor<SD>
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(SocketFileDescriptor::from_raw_fd(fd))
+	}
+}
+
 impl<SD: SocketData> StreamingServerListenerSocketFileDescriptor<SD>
 {
 	/// Accepts any pending connections.

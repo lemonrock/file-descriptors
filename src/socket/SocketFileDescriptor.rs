@@ -33,6 +33,15 @@ impl<SD: SocketData> Drop for SocketFileDescriptor<SD>
 	}
 }
 
+impl<SD: SocketData> FromRawFd for SocketFileDescriptor<SD>
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd, PhantomData)
+	}
+}
+
 impl SocketFileDescriptor<sockaddr_in>
 {
 	/// Creates a new instance of a Transmission Control Protocol (TCP) socket over Internet Protocol (IP) version 4 server listener.

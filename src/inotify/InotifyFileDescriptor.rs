@@ -33,6 +33,15 @@ impl IntoRawFd for InotifyFileDescriptor
 	}
 }
 
+impl FromRawFd for InotifyFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl InotifyFileDescriptor
 {
 	/// Creates a new instance.

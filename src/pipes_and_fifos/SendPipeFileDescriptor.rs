@@ -37,6 +37,15 @@ impl IntoRawFd for SendPipeFileDescriptor
 	}
 }
 
+impl FromRawFd for SendPipeFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl SpliceRecipient for SendPipeFileDescriptor
 {
 }

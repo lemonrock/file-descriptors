@@ -26,6 +26,15 @@ impl IntoRawFd for TerminalFileDescriptor
 	}
 }
 
+impl FromRawFd for TerminalFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(CharacterDeviceFileDescriptor::from_raw_fd(fd))
+	}
+}
+
 impl SpliceRecipient for TerminalFileDescriptor
 {
 }

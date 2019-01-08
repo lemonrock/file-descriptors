@@ -32,6 +32,15 @@ impl IntoRawFd for PosixMessageQueueFileDescriptor
 	}
 }
 
+impl FromRawFd for PosixMessageQueueFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl PosixMessageQueueFileDescriptor
 {
 	/// Creates a new instance.

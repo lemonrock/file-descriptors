@@ -38,6 +38,15 @@ impl IntoRawFd for SignalFileDescriptor
 	}
 }
 
+impl FromRawFd for SignalFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl SignalFileDescriptor
 {
 	/// Creates a new instance.

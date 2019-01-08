@@ -33,6 +33,15 @@ impl IntoRawFd for TimerFileDescriptor
 	}
 }
 
+impl FromRawFd for TimerFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl TimerFileDescriptor
 {
 	/// Creates a new instance.

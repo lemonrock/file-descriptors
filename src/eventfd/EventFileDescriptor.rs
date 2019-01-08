@@ -33,6 +33,15 @@ impl IntoRawFd for EventFileDescriptor
 	}
 }
 
+impl FromRawFd for EventFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl EventFileDescriptor
 {
 	/// Creates a new instance.

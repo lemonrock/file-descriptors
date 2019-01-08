@@ -43,6 +43,15 @@ impl<SD: SocketData> AsRawFd for DatagramServerListenerSocketFileDescriptor<SD>
 	}
 }
 
+impl<SD: SocketData> FromRawFd for DatagramServerListenerSocketFileDescriptor<SD>
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(SocketFileDescriptor::from_raw_fd(fd))
+	}
+}
+
 impl DatagramServerListenerSocketFileDescriptor<sockaddr_un>
 {
 	/// Receive file descriptors.

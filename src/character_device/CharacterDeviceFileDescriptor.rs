@@ -35,6 +35,15 @@ impl IntoRawFd for CharacterDeviceFileDescriptor
 	}
 }
 
+impl FromRawFd for CharacterDeviceFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl SpliceRecipient for CharacterDeviceFileDescriptor
 {
 }

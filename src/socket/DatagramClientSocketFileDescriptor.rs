@@ -43,6 +43,15 @@ impl<SD: SocketData> AsRawFd for DatagramClientSocketFileDescriptor<SD>
 	}
 }
 
+impl<SD: SocketData> FromRawFd for DatagramClientSocketFileDescriptor<SD>
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(SocketFileDescriptor::from_raw_fd(fd))
+	}
+}
+
 impl<SD: SocketData> DatagramClientSocketFileDescriptor<SD>
 {
 	/// Receive messages up to the maximum capacity of `received_messages`.

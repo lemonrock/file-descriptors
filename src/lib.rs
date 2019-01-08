@@ -65,6 +65,7 @@
 //! * Receiving credentials over Unix Domain Sockets using `recvmsg()`.
 //! * `mkfifo()`.
 //! * `mknod()`.
+//! * `sendfile()` (not as important with pipe support).
 //! * infiniband sockets.
 //! * canbus (SocketCAN sockets and can4linux <http://can-wiki.info/can4linux/man/can4linux_8h_source.html> character device drivers).
 //!
@@ -148,7 +149,7 @@ cfg_if!
 		use ::std::mem::zeroed;
 		use ::std::os::unix::ffi::OsStrExt;
 		use ::std::os::unix::io::AsRawFd;
-		#[allow(unused_imports)] use ::std::os::unix::io::FromRawFd;
+		use ::std::os::unix::io::FromRawFd;
 		use ::std::os::unix::io::IntoRawFd;
 		use ::std::path::Path;
 		use ::std::ptr::null;

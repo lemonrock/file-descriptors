@@ -33,6 +33,15 @@ impl IntoRawFd for EPollFileDescriptor
 	}
 }
 
+impl FromRawFd for EPollFileDescriptor
+{
+	#[inline(always)]
+	unsafe fn from_raw_fd(fd: RawFd) -> Self
+	{
+		Self(fd)
+	}
+}
+
 impl EventPoll for EPollFileDescriptor
 {
 	#[inline(always)]
