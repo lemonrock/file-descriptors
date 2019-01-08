@@ -5,6 +5,7 @@
 use super::*;
 use super::pipes_and_fifos::SpliceRecipient;
 use super::pipes_and_fifos::SpliceSender;
+use super::sendfile::SendFile;
 use self::syscall::*;
 use ::libc::AF_IB;
 use ::libc::AF_INET;
@@ -41,11 +42,13 @@ use ::libc::sa_family_t; // Typically u16.
 use ::libc::SOCK_DGRAM;
 use ::libc::SOCK_STREAM;
 use ::libc::send;
+use ::libc::sendfile;
 use ::libc::socklen_t; // Typically u32.
 use ::libc::uid_t;
 use ::std::borrow::Borrow;
 use ::std::borrow::BorrowMut;
 use ::std::cmp::Ordering;
+use ::std::fs::File;
 use ::std::hash::Hash;
 use ::std::hash::Hasher;
 use ::std::io;

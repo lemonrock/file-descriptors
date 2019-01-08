@@ -30,9 +30,11 @@
 //! * POSIX message queues (<(https://linux.die.net/man/7/mq_overview>).
 //! * pipes and FIFOs (anonymous and named FIFOs), including support for splice, vmsplice and tee.
 //! * signalfd.
-//! * sockets (TCP, UDP and the equivalent over Unix Domain Sockets).
+//! * sockets (TCP, UDP and the equivalent over Unix Domain Sockets; sendfile supported).
 //! * terminals (serial ports and modems).
 //! * timerfd.
+//!
+//! Additionally, extensions (`SendFile`, `SpliceRecipient` and `SpliceSender`) are implemented for Rust's `File`.
 //!
 //!
 //! ## Unix Domain Sockets
@@ -65,7 +67,6 @@
 //! * Receiving credentials over Unix Domain Sockets using `recvmsg()`.
 //! * `mkfifo()`.
 //! * `mknod()`.
-//! * `sendfile()` (not as important with pipe support).
 //! * infiniband sockets.
 //! * canbus (SocketCAN sockets and can4linux <http://can-wiki.info/can4linux/man/can4linux_8h_source.html> character device drivers).
 //!
@@ -199,6 +200,11 @@ cfg_if!
 		#[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux"))]
 		/// fanotify file descriptors.
 		pub mod fanotify;
+
+
+		/// Additional support for using `sendfile()` with Rust's File and our sockets.
+		#[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux"))]
+		pub mod sendfile;
 
 
 		/// Signal file descriptors.

@@ -20,10 +20,11 @@ Support for the BSDs is desired.
 * inotify.
 * POSIX message queues (<(https://linux.die.net/man/7/mq_overview>).
 * pipes and FIFOs (anonymous and named FIFOs), including support for splice, vmsplice and tee.
-* signalfd.
-* sockets (TCP, UDP and the equivalent over Unix Domain Sockets).
+* sockets (TCP, UDP and the equivalent over Unix Domain Sockets; sendfile supported).
 * terminals (serial ports and modems).
 * timerfd.
+
+Additionally, extensions (`SendFile`, `SpliceRecipient` and `SpliceSender`) are implemented for Rust's `File`.
 
 
 ## Unix Domain Sockets
