@@ -72,7 +72,8 @@ use ::std::os::unix::fs::DirBuilderExt;
 use ::std::os::unix::fs::PermissionsExt;
 
 
-mod syscall;
+/// Contains essential data structures.
+pub mod syscall;
 
 
 include!("AcceptedConnection.rs");
