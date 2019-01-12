@@ -50,7 +50,7 @@ impl SocketFileDescriptor<sockaddr_in>
 	///
 	/// The default value in `/proc/sys/net/core/somaxconn` is `128`.
 	#[inline(always)]
-	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_4_server_listener(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32) -> Result<StreamingServerListenerSocketFileDescriptor<sockaddr_in>, NewSocketServerListenerError>
+	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_4_server_listener(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32) -> Result<StreamingServerListenerSocketInternetProtocolVersion4FileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in>::new_transmission_control_protocol_over_internet_protocol_version_4(send_buffer_size_in_bytes, receive_buffer_size_in_bytes, idles_before_keep_alive_seconds, keep_alive_interval_seconds, maximum_keep_alive_probes, linger_seconds, linger_in_FIN_WAIT2_seconds, maximum_SYN_transmits)?;
 		this.set_internet_protocol_server_listener_socket_options();
@@ -61,7 +61,7 @@ impl SocketFileDescriptor<sockaddr_in>
 
 	/// Creates a new instance of a Transmission Control Protocol (TCP) socket over Internet Protocol (IP) version 4 client.
 	#[inline(always)]
-	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_4_client(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16) -> Result<StreamingSocketFileDescriptor<sockaddr_in>, NewSocketClientError>
+	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_4_client(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16) -> Result<StreamingSocketInternetProtocolVersion4FileDescriptor, NewSocketClientError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in>::new_transmission_control_protocol_over_internet_protocol_version_4(send_buffer_size_in_bytes, receive_buffer_size_in_bytes, idles_before_keep_alive_seconds, keep_alive_interval_seconds, maximum_keep_alive_probes, linger_seconds, linger_in_FIN_WAIT2_seconds, maximum_SYN_transmits)?;
 		this.connect_internet_protocol_version_4_socket(socket_address)?;
@@ -70,7 +70,7 @@ impl SocketFileDescriptor<sockaddr_in>
 
 	/// Creates a new instance of a User Datagram Protocol (UDP) socket over Internet Protocol (IP) version 4 server listener.
 	#[inline(always)]
-	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_4_server_listener(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramServerListenerSocketFileDescriptor<sockaddr_in>, NewSocketServerListenerError>
+	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_4_server_listener(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramServerListenerSocketInternetProtocolVersion4FileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in>::new_user_datagram_protocol_over_internet_protocol_version_4(send_buffer_size_in_bytes, receive_buffer_size_in_bytes)?;
 		this.set_internet_protocol_server_listener_socket_options();
@@ -80,7 +80,7 @@ impl SocketFileDescriptor<sockaddr_in>
 
 	/// Creates a new instance of a User Datagram Protocol (UDP) socket over Internet Protocol (IP) version 4 client.
 	#[inline(always)]
-	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_4_client(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramClientSocketFileDescriptor<sockaddr_in>, NewSocketClientError>
+	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_4_client(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramClientSocketInternetProtocolVersion4FileDescriptor, NewSocketClientError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in>::new_user_datagram_protocol_over_internet_protocol_version_4(send_buffer_size_in_bytes, receive_buffer_size_in_bytes)?;
 		this.connect_internet_protocol_version_4_socket(socket_address)?;
@@ -114,7 +114,7 @@ impl SocketFileDescriptor<sockaddr_in6>
 	///
 	/// The default value in `/proc/sys/net/core/somaxconn` is `128`.
 	#[inline(always)]
-	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_6_server_listener(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32) -> Result<StreamingServerListenerSocketFileDescriptor<sockaddr_in6>, NewSocketServerListenerError>
+	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_6_server_listener(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32) -> Result<StreamingServerListenerSocketInternetProtocolVersion6FileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in6>::new_transmission_control_protocol_over_internet_protocol_version_6(send_buffer_size_in_bytes, receive_buffer_size_in_bytes, idles_before_keep_alive_seconds, keep_alive_interval_seconds, maximum_keep_alive_probes, linger_seconds, linger_in_FIN_WAIT2_seconds, maximum_SYN_transmits)?;
 		this.set_internet_protocol_server_listener_socket_options();
@@ -125,7 +125,7 @@ impl SocketFileDescriptor<sockaddr_in6>
 
 	/// Creates a new instance of a Transmission Control Protocol (TCP) socket over Internet Protocol (IP) version 6 client.
 	#[inline(always)]
-	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_6_client(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16) -> Result<StreamingSocketFileDescriptor<sockaddr_in6>, NewSocketClientError>
+	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_6_client(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16) -> Result<StreamingSocketInternetProtocolVersion6FileDescriptor, NewSocketClientError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in6>::new_transmission_control_protocol_over_internet_protocol_version_6(send_buffer_size_in_bytes, receive_buffer_size_in_bytes, idles_before_keep_alive_seconds, keep_alive_interval_seconds, maximum_keep_alive_probes, linger_seconds, linger_in_FIN_WAIT2_seconds, maximum_SYN_transmits)?;
 		this.connect_internet_protocol_version_6_socket(socket_address)?;
@@ -134,7 +134,7 @@ impl SocketFileDescriptor<sockaddr_in6>
 
 	/// Creates a new instance of a User Datagram Protocol (UDP) socket over Internet Protocol (IP) version 6 server listener.
 	#[inline(always)]
-	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_6_server_listener(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramServerListenerSocketFileDescriptor<sockaddr_in6>, NewSocketServerListenerError>
+	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_6_server_listener(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramServerListenerSocketInternetProtocolVersion6FileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in6>::new_user_datagram_protocol_over_internet_protocol_version_6(send_buffer_size_in_bytes, receive_buffer_size_in_bytes)?;
 		this.set_internet_protocol_server_listener_socket_options();
@@ -144,7 +144,7 @@ impl SocketFileDescriptor<sockaddr_in6>
 
 	/// Creates a new instance of a User Datagram Protocol (UDP) socket over Internet Protocol (IP) version 6 client.
 	#[inline(always)]
-	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_6_client(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramClientSocketFileDescriptor<sockaddr_in6>, NewSocketClientError>
+	pub(crate) fn new_user_datagram_protocol_over_internet_protocol_version_6_client(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize) -> Result<DatagramClientSocketInternetProtocolVersion6FileDescriptor, NewSocketClientError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in6>::new_user_datagram_protocol_over_internet_protocol_version_6(send_buffer_size_in_bytes, receive_buffer_size_in_bytes)?;
 		this.connect_internet_protocol_version_6_socket(socket_address)?;
@@ -390,7 +390,7 @@ impl SocketFileDescriptor<sockaddr_un>
 	///
 	/// This is local socket akin to a Transmission Control Protocol (TCP) socket.
 	#[inline(always)]
-	pub(crate) fn new_streaming_unix_domain_socket_server_listener(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<StreamingServerListenerSocketFileDescriptor<sockaddr_un>, NewSocketServerListenerError>
+	pub(crate) fn new_streaming_unix_domain_socket_server_listener(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<StreamingServerListenerSocketUnixDomainFileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_un>::new_streaming_unix_domain_socket(send_buffer_size_in_bytes)?;
 		this.bind_unix_domain_socket(unix_socket_address)?;
@@ -401,7 +401,7 @@ impl SocketFileDescriptor<sockaddr_un>
 	///
 	/// This is local socket akin to a Transmission Control Protocol (TCP) socket.
 	#[inline(always)]
-	pub(crate) fn new_streaming_unix_domain_socket_client(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<StreamingSocketFileDescriptor<sockaddr_un>, NewSocketClientError>
+	pub(crate) fn new_streaming_unix_domain_socket_client(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<StreamingSocketUnixDomainFileDescriptor, NewSocketClientError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_un>::new_streaming_unix_domain_socket(send_buffer_size_in_bytes)?;
 		this.connect_unix_domain_socket(unix_socket_address)?;
@@ -412,7 +412,7 @@ impl SocketFileDescriptor<sockaddr_un>
 	///
 	/// This is local socket akin to an User Datagram Protocol (UDP) socket.
 	#[inline(always)]
-	pub(crate) fn new_datagram_unix_domain_socket_server_listener(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<DatagramServerListenerSocketFileDescriptor<sockaddr_un>, NewSocketServerListenerError>
+	pub(crate) fn new_datagram_unix_domain_socket_server_listener(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<DatagramServerListenerSocketUnixDomainFileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_un>::new_datagram_unix_domain_socket(send_buffer_size_in_bytes)?;
 		this.bind_unix_domain_socket(unix_socket_address)?;
@@ -423,7 +423,7 @@ impl SocketFileDescriptor<sockaddr_un>
 	///
 	/// This is local socket akin to an User Datagram Protocol (UDP) socket.
 	#[inline(always)]
-	pub(crate) fn new_datagram_unix_domain_socket_client(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<DatagramClientSocketFileDescriptor<sockaddr_un>, NewSocketClientError>
+	pub(crate) fn new_datagram_unix_domain_socket_client(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<DatagramClientSocketUnixDomainFileDescriptor, NewSocketClientError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_un>::new_datagram_unix_domain_socket(send_buffer_size_in_bytes)?;
 		this.connect_unix_domain_socket(unix_socket_address)?;
@@ -434,7 +434,7 @@ impl SocketFileDescriptor<sockaddr_un>
 	///
 	/// This is a pair of local sockets akin to Transmission Control Protocol (TCP) sockets.
 	#[inline(always)]
-	pub(crate) fn new_streaming_unix_domain_socket_pair(lefthand_send_buffer_size_in_bytes: usize, righthand_send_buffer_size_in_bytes: usize) -> Result<(StreamingSocketFileDescriptor<sockaddr_un>, StreamingSocketFileDescriptor<sockaddr_un>), NewSocketClientError>
+	pub(crate) fn new_streaming_unix_domain_socket_pair(lefthand_send_buffer_size_in_bytes: usize, righthand_send_buffer_size_in_bytes: usize) -> Result<(StreamingSocketUnixDomainFileDescriptor, StreamingSocketUnixDomainFileDescriptor), NewSocketClientError>
 	{
 		let (lefthand, righthand) = Self::socketpair(SOCK_STREAM, lefthand_send_buffer_size_in_bytes, righthand_send_buffer_size_in_bytes)?;
 
@@ -445,7 +445,7 @@ impl SocketFileDescriptor<sockaddr_un>
 	///
 	/// This is a pair of local sockets akin to User Datagram Protocol (UDP) sockets.
 	#[inline(always)]
-	pub(crate) fn new_datagram_unix_domain_socket_pair(lefthand_send_buffer_size_in_bytes: usize, righthand_send_buffer_size_in_bytes: usize) -> Result<(DatagramClientSocketFileDescriptor<sockaddr_un>, DatagramClientSocketFileDescriptor<sockaddr_un>), NewSocketClientError>
+	pub(crate) fn new_datagram_unix_domain_socket_pair(lefthand_send_buffer_size_in_bytes: usize, righthand_send_buffer_size_in_bytes: usize) -> Result<(DatagramClientSocketUnixDomainFileDescriptor, DatagramClientSocketUnixDomainFileDescriptor), NewSocketClientError>
 	{
 		let (lefthand, righthand) = Self::socketpair(SOCK_DGRAM, lefthand_send_buffer_size_in_bytes, righthand_send_buffer_size_in_bytes)?;
 

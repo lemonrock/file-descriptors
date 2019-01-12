@@ -7,13 +7,13 @@
 pub enum StreamingSocketFileDescriptorEnum
 {
 	/// An Internet Protocol (IP) version 4 streaming socket.
-	InternetProtocolVersion4(StreamingSocketFileDescriptor<sockaddr_in>),
+	InternetProtocolVersion4(StreamingSocketInternetProtocolVersion4FileDescriptor),
 
 	/// An Internet Protocol (IP) version 6 streaming socket.
-	InternetProtocolVersion6(StreamingSocketFileDescriptor<sockaddr_in6>),
+	InternetProtocolVersion6(StreamingSocketInternetProtocolVersion6FileDescriptor),
 
 	/// An Unix Domain streaming socket.
-	UnixDomain(StreamingSocketFileDescriptor<sockaddr_un>),
+	UnixDomain(StreamingSocketUnixDomainFileDescriptor),
 }
 
 impl AsRawFd for StreamingSocketFileDescriptorEnum

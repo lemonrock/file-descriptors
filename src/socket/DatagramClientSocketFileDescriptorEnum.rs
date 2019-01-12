@@ -7,13 +7,13 @@
 pub enum DatagramClientSocketFileDescriptorEnum
 {
 	/// An Internet Protocol (IP) version 4 streaming socket.
-	InternetProtocolVersion4(DatagramClientSocketFileDescriptor<sockaddr_in>),
+	InternetProtocolVersion4(DatagramClientSocketInternetProtocolVersion4FileDescriptor),
 
 	/// An Internet Protocol (IP) version 6 streaming socket.
-	InternetProtocolVersion6(DatagramClientSocketFileDescriptor<sockaddr_in6>),
+	InternetProtocolVersion6(DatagramClientSocketInternetProtocolVersion6FileDescriptor),
 
 	/// An Unix Domain streaming socket.
-	UnixDomain(DatagramClientSocketFileDescriptor<sockaddr_un>),
+	UnixDomain(DatagramClientSocketUnixDomainFileDescriptor),
 }
 
 impl AsRawFd for DatagramClientSocketFileDescriptorEnum
