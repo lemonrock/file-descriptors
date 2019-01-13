@@ -89,7 +89,6 @@ cfg_if!
 {
 	if #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))]
 	{
-		use self::epoll::*;
 		use self::terminal::TerminalSettingsError;
 		use ::arrayvec::ArrayVec;
 		use ::errno::errno;

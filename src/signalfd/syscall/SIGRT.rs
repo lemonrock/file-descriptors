@@ -3,15 +3,15 @@
 
 
 /// This is the Kernel lower limit of `SIGRTMIN`.
-pub(crate) const SIGRTMIN_Kernel: c_int = 32;
+pub const SIGRTMIN_Kernel: c_int = 32;
 
 /// In theory, this is a libc-specific value, but both modern glibc and musl define it as `35` (in the past, when using an older threading implementation, glibc defined it as `34`).
 ///
 /// The kernel lower-limit is 32.
-pub(crate) const SIGRTMIN: c_int = 35;
+pub const SIGRTMIN: c_int = 35;
 
 /// This value is defined by the kernel.
 ///
 /// There seems to be a bug in musl that defines this value as `127` for MIPS, but the kernel sources disagree.
-#[cfg(any(target_arch = "mips", target_arch = "mips64"))] pub(crate) const SIGRTMAX: c_int = 128;
-#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))] pub(crate) const SIGRTMAX: c_int = 64;
+#[cfg(any(target_arch = "mips", target_arch = "mips64"))] pub const SIGRTMAX: c_int = 128;
+#[cfg(not(any(target_arch = "mips", target_arch = "mips64")))] pub const SIGRTMAX: c_int = 64;

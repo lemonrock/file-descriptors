@@ -4,15 +4,12 @@
 
 use super::*;
 use self::syscall::*;
-use ::libc::pthread_sigmask;
 use ::libc::raise;
-use ::libc::SIG_BLOCK;
 use ::libc::SIGABRT;
 use ::libc::SIGALRM;
 use ::libc::SIGBUS;
 use ::libc::SIGCHLD;
 use ::libc::SIGCONT;
-use ::libc::sigfillset;
 use ::libc::SIGFPE;
 use ::libc::SIGHUP;
 use ::libc::SIGILL;
@@ -46,7 +43,6 @@ use ::std::process::exit;
 mod syscall;
 
 
-include!("AllSignalReactor.rs");
 include!("ArithmeticErrorCode.rs");
 include!("BusCode.rs");
 include!("BusFaultData.rs");

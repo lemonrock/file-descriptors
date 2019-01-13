@@ -20,4 +20,3 @@ include!("EPollRegistrationError.rs");
 include!("EPollTimeOut.rs");
 include!("EPollWaitError.rs");
 include!("EventPoll.rs");
-include!("Reactor.rs");

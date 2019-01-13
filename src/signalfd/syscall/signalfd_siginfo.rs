@@ -77,7 +77,7 @@ pub struct signalfd_siginfo
 impl signalfd_siginfo
 {
 	#[inline(always)]
-	pub(crate) fn handle_signal(&self, signal_handler: &impl SignalHandler) -> Result<(), ()>
+	pub fn handle_signal(&self, signal_handler: &impl SignalHandler) -> Result<(), ()>
 	{
 		#[cfg(any(target_arch = "mips", target_arch = "mips64", target_arch = "sparc64"))] const SIGEMT: c_int = 7;
 

@@ -88,7 +88,7 @@ pub trait SignalHandler
 	/// Unlike all the other methods does not return a `Result`.
 	///
 	/// The `SIGABRT` signal is sent to a process to tell it to abort, ie to terminate.
-	/// The signal is usually initiated by the process itself when it calls `abort()` function of the C Standard Library, but it can be sent to the process from outside like any other signal.
+	/// The signal is usually initiated by the process itself when it calls the `abort()` function of the C Standard Library, but it can be sent to the process from outside like any other signal.
 	#[inline(always)]
 	#[allow(unused_variables)]
 	fn handle_sigabrt(&self, signal_data: GenericSignalData)
@@ -157,7 +157,7 @@ pub trait SignalHandler
 	{
 		#[cfg(any(target_arch = "mips", target_arch = "mips64", target_arch = "sparc64"))]
 		{
-			abort()
+			self.abort()
 		}
 
 		#[cfg(not(any(target_arch = "mips", target_arch = "mips64", target_arch = "sparc64")))]
@@ -324,7 +324,7 @@ pub trait SignalHandler
 	#[allow(unused_variables)]
 	fn handle_sigsys(&self, signal_data: SpecificSignalData<SystemCallCode>) -> Result<(), ()>
 	{
-		abort()
+		self.abort()
 	}
 
 	/// Handle the `SIGTERM` signal.
