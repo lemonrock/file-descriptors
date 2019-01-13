@@ -40,7 +40,8 @@ use ::std::process::abort;
 use ::std::process::exit;
 
 
-mod syscall;
+/// System call and libc wrapping of system call specific details.
+pub mod syscall;
 
 
 include!("ArithmeticErrorCode.rs");

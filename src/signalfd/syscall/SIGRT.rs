@@ -14,4 +14,7 @@ pub const SIGRTMIN: c_int = 35;
 ///
 /// There seems to be a bug in musl that defines this value as `127` for MIPS, but the kernel sources disagree.
 #[cfg(any(target_arch = "mips", target_arch = "mips64"))] pub const SIGRTMAX: c_int = 128;
+/// This value is defined by the kernel.
+///
+/// There seems to be a bug in musl that defines this value as `127` for MIPS, but the kernel sources disagree.
 #[cfg(not(any(target_arch = "mips", target_arch = "mips64")))] pub const SIGRTMAX: c_int = 64;

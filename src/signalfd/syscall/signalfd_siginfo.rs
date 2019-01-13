@@ -76,6 +76,7 @@ pub struct signalfd_siginfo
 
 impl signalfd_siginfo
 {
+	/// Handle a signal.
 	#[inline(always)]
 	pub fn handle_signal(&self, signal_handler: &impl SignalHandler) -> Result<(), ()>
 	{
