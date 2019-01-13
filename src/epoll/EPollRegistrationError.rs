@@ -9,6 +9,9 @@ pub enum EPollRegistrationError
 	/// Error on creation.
 	Creation(CreationError),
 
+	/// Could not allocate (out of memory in some way).
+	Allocation,
+
 	/// Error during registration.
 	Registration(EPollAddError),
 }
@@ -30,10 +33,13 @@ impl error::Error for EPollRegistrationError
 		use self::EPollRegistrationError::*;
 
 		match self
-			{
-				&Creation(ref error) => Some(error),
-				&Registration(ref error) => Some(error),
-			}
+		{
+			&Creation(ref error) => Some(error),
+
+			&Allocation => None,
+
+			&Registration(ref error) => Some(error),
+		}
 	}
 }
 
