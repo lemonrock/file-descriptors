@@ -49,6 +49,34 @@ impl FromRawFd for SignalFileDescriptor
 
 impl SignalFileDescriptor
 {
+	/// Creates a new instance for all signals, and returns itself and the signal mask used; blocks all signals that are in the mask if creation of a new instance was successful.
+	#[inline(always)]
+	pub fn new_with_filled_signal_mask() -> Result<(Self, sigset_t), CreationError>
+	{
+		let signal_mask = Self::filled_signal_mask();
+		Self::new(&signal_mask).map(|this|
+		{
+			Self::block_signals(&signal_mask);
+
+			(this, signal_mask)
+		})
+	}
+
+	#[inline(always)]
+	fn block_signals(signal_mask: &sigset_t)
+	{
+		let result = unsafe { pthread_sigmask(SIG_BLOCK, signal_mask, null_mut()) };
+		if unlikely!(result != 0)
+		{
+			match result
+			{
+				EFAULT => panic!("The `set` or `oldset` argument points outside the process's allocated address space"),
+				EINVAL => panic!("Either the value specified in `how` was invalid or the kernel does not support the size passed in `sigsetsize`"),
+				_ => unreachable!(),
+			}
+		}
+	}
+
 	/// Creates a new instance.
 	///
 	/// The `initial_value` can not be `::std::u64::MAX`.
@@ -76,6 +104,29 @@ impl SignalFileDescriptor
 					_ => unreachable!(),
 				}
 			)
+		}
+	}
+
+	#[inline(always)]
+	fn filled_signal_mask() -> sigset_t
+	{
+		let mut signal_mask = unsafe { uninitialized() };
+		let result = unsafe {  sigfillset(&mut signal_mask) };
+		if likely!(result == 0)
+		{
+			signal_mask
+		}
+		else if likely!(result == -1)
+		{
+			match errno().0
+			{
+				EINVAL => panic!("Invalid arguments"),
+				_ => unreachable!(),
+			}
+		}
+		else
+		{
+			unreachable!();
 		}
 	}
 
