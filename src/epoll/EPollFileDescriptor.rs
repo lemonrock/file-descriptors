@@ -166,11 +166,15 @@ impl EPollFileDescriptor
 
 		use self::EPollAddError::*;
 
-		match unsafe { epoll_ctl(self.0, EPOLL_CTL_ADD, fd, &mut event) }
-		{
-			0 => Ok(()),
+		let result = unsafe { epoll_ctl(self.0, EPOLL_CTL_ADD, fd, &mut event) };
 
-			-1 => Err
+		if likely!(result == 0)
+		{
+			Ok(())
+		}
+		else if likely!(result == -1)
+		{
+			Err
 			(
 				match errno().0
 				{
@@ -186,9 +190,11 @@ impl EPollFileDescriptor
 
 					_ => unreachable!(),
 				}
-			),
-
-			_ => unreachable!(),
+			)
+		}
+		else
+		{
+			unreachable!()
 		}
 	}
 
@@ -205,11 +211,15 @@ impl EPollFileDescriptor
 			},
 		};
 
-		match unsafe { epoll_ctl(self.0, EPOLL_CTL_MOD, fd, &mut event) }
-		{
-			0 => Ok(()),
+		let result = unsafe { epoll_ctl(self.0, EPOLL_CTL_MOD, fd, &mut event) };
 
-			-1 => match errno().0
+		if likely!(result == 0)
+		{
+			Ok(())
+		}
+		else if likely!(result == -1)
+		{
+			match errno().0
 			{
 				ENOMEM => Err(EPollModifyError::ThereWasInsufficientKernelMemory),
 
@@ -219,23 +229,27 @@ impl EPollFileDescriptor
 				EPERM => panic!("The supplied file descriptor does not support epoll (perhaps it is an open regular file or the like)"),
 
 				_ => unreachable!(),
-			},
-
-			_ => unreachable!(),
+			}
+		}
+		else
+		{
+			unreachable!()
 		}
 	}
 
 	/// Deletes a file descriptor in an Event Poll (epoll) instance.
 	#[inline(always)]
-	pub fn delete(&self, fd: RawFd) -> Result<(), EPollDeleteError>
+	pub fn delete(&self, fd: RawFd)
 	{
-		match unsafe { epoll_ctl(self.0, EPOLL_CTL_DEL, fd, null_mut()) }
+		let result = unsafe { epoll_ctl(self.0, EPOLL_CTL_DEL, fd, null_mut()) };
+		if likely!(result == 0)
 		{
-			0 => Ok(()),
-
-			-1 => match errno().0
+		}
+		else if likely!(result == -1)
+		{
+			match errno().0
 			{
-				ENOMEM => Err(EPollDeleteError::ThereWasInsufficientKernelMemory),
+				ENOMEM => panic!("Examination of the Linux source code fs/eventpoll.c suggests `ENOMEM` should not occur for `EPOLL_CTL_DEL`"),
 
 				EBADF => panic!("The supplied file descriptor was not a valid file descriptor"),
 				EINVAL => panic!("Supplied file descriptor was not usable"),
@@ -243,9 +257,11 @@ impl EPollFileDescriptor
 				EPERM => panic!("The supplied file descriptor does not support epoll (perhaps it is an open regular file or the like)"),
 
 				_ => unreachable!(),
-			},
-
-			_ => unreachable!(),
+			}
+		}
+		else
+		{
+			unreachable!()
 		}
 	}
 }

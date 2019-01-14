@@ -11,7 +11,6 @@ pub mod syscall;
 
 
 include!("EPollAddError.rs");
-include!("EPollDeleteError.rs");
 include!("EPollAddFlags.rs");
 include!("EPollEventFlags.rs");
 include!("EPollFileDescriptor.rs");
