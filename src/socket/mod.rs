@@ -47,6 +47,7 @@ use ::libc::socklen_t; // Typically u32.
 use ::libc::uid_t;
 use ::std::borrow::Borrow;
 use ::std::borrow::BorrowMut;
+use ::std::cmp::max;
 use ::std::cmp::Ordering;
 use ::std::hash::Hash;
 use ::std::hash::Hasher;

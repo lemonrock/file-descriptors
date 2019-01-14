@@ -824,7 +824,7 @@ impl<SD: SocketData> SocketFileDescriptor<SD>
 	#[inline(always)]
 	fn set_tcp_max_SYN_transmits(&self, maximum_SYN_transmits: u16)
 	{
-		let maximum_SYN_transmits: i32 = maximum_SYN_transmits as i32;
+		let maximum_SYN_transmits: i32 = max(1, maximum_SYN_transmits) as i32;
 		self.set_socket_option(SOL_TCP, TCP_SYNCNT, &maximum_SYN_transmits);
 	}
 
@@ -856,9 +856,6 @@ impl<SD: SocketData> SocketFileDescriptor<SD>
 	#[inline(always)]
 	fn set_tcp_socket_options(&self, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16)
 	{
-		debug_assert!(maximum_SYN_transmits > 0, "maximum_SYN_transmits is zero");
-		//TODO: SOL_SOCKET,SO_BINDTODEVICE,CStr => force use of device such as `eth0`.
-
 		self.set_socket_option_true(SOL_SOCKET, SO_KEEPALIVE);
 
 		self.set_out_of_band_inline();
