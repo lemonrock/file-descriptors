@@ -17,7 +17,6 @@ include!("EPollEventFlags.rs");
 include!("EPollFileDescriptor.rs");
 include!("EPollModifyError.rs");
 include!("EPollModifyFlags.rs");
-include!("EPollRegistrationError.rs");
 include!("EPollTimeOut.rs");
 include!("EPollWaitError.rs");
 include!("EventPoll.rs");

@@ -177,17 +177,6 @@ impl EPollFileDescriptor
 		}
 	}
 
-	/// Wait until some events are ready.
-	pub fn wait_until_ready(&self, events: &mut [epoll_event], epoll_time_out: EPollTimeOut, mut event_handler: impl FnMut(&Self, u64, EPollEventFlags)) -> Result<(), EPollWaitError>
-	{
-		for event in self.wait(events, epoll_time_out)?
-		{
-			event_handler(self, event.token(), event.flags())
-		}
-
-		Ok(())
-	}
-
 	/// Waits for events.
 	///
 	/// Fills `events` as much as possible and returns it as a slice.
