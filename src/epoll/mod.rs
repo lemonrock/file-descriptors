@@ -19,4 +19,3 @@ include!("EPollModifyError.rs");
 include!("EPollModifyFlags.rs");
 include!("EPollTimeOut.rs");
 include!("EPollWaitError.rs");
-include!("EventPoll.rs");
