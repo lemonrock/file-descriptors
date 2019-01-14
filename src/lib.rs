@@ -215,6 +215,10 @@ cfg_if!
 		pub mod fanotify;
 
 
+		/// File descriptor information obtained from `/proc`.
+		pub mod file_descriptor_information;
+
+
 		/// Additional support for using `sendfile()` with Rust's File and our sockets.
 		#[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux"))]
 		pub mod sendfile;
@@ -240,7 +244,6 @@ cfg_if!
 
 
 		include!("CreationError.rs");
-		include!("FileDescriptorInformationHeader.rs");
 		include!("InvalidPathReason.rs");
 		include!("path_bytes_without_trailing_nul.rs");
 		include!("RawFdExt.rs");
