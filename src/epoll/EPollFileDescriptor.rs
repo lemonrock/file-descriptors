@@ -264,4 +264,300 @@ impl EPollFileDescriptor
 			unreachable!()
 		}
 	}
+
+	/// Obtains information for this file descriptor from the `/proc` file system.
+	///
+	/// This involves many system calls and should not be part of the critical path of an application.
+	///
+	/// Additionally, most `/proc` files are only atomic for a particular read.
+	///
+	/// Linux version 3.8 or later is assumed.
+	pub fn information(&self) -> io::Result<(FileDescriptorInformationHeader, impl Iterator<Item=EPollInformationItem>)>
+	{
+		struct InformationIterator
+		{
+			buffered_reader: Option<BufReader<File>>,
+			bytes_read: ArrayVec<[u8; MaximumBytesPerLine]>,
+		}
+
+		impl Iterator for InformationIterator
+		{
+			type Item = EPollInformationItem;
+
+			#[inline(always)]
+			fn next(&mut self) -> Option<Self::Item>
+			{
+				if self.buffered_reader.is_none()
+				{
+					return None
+				}
+
+				let result =
+				{
+					let buffered_reader = self.buffered_reader.as_mut().unwrap();
+					self.bytes_read.read_until_line_feed(buffered_reader)
+				};
+
+				match result
+				{
+					Err(_) =>
+					{
+						self.buffered_reader = None;
+						None
+					}
+
+					Ok(0) =>
+					{
+						self.buffered_reader = None;
+						None
+					}
+
+					Ok(_) => match self.parse_line()
+					{
+						Err(_) =>
+						{
+							self.buffered_reader = None;
+							None
+						}
+
+						Ok(epoll_information_item) =>
+						{
+							self.bytes_read.clear();
+							Some(epoll_information_item)
+						}
+					}
+				}
+			}
+		}
+
+		impl InformationIterator
+		{
+			fn parse_line(&mut self) -> io::Result<EPollInformationItem>
+			{
+				let remaining_bytes = &self.bytes_read[..];
+
+				let (target_file_descriptor, remaining_bytes) = extract_fixed_width_value_from_slice(remaining_bytes, b"tfd: ", 8, |string| RawFd::from_str_radix(string.trim_start(), 10))?;
+				let (event_flags, remaining_bytes) = extract_fixed_width_value_from_slice(remaining_bytes, b" events: ", 8, |string| u32::from_str_radix(string.trim_start(), 16))?;
+				let (token, remaining_bytes) = extract_fixed_width_value_from_slice(remaining_bytes, b" data: ", 16, |string| u64::from_str_radix(string.trim_start(), 16))?;
+
+				// NOTE: The double space is correct.
+				let (position, remaining_bytes) = extract_space_terminated_value_from_slice(remaining_bytes, b"  pos:", |string| i64::from_str_radix(string, 10))?;
+				let (inode, remaining_bytes) = extract_space_terminated_value_from_slice(remaining_bytes, b"ino:", |string| isize::from_str_radix(string, 16))?;
+				let (sdevice, remaining_bytes) = extract_space_terminated_value_from_slice(remaining_bytes, b"sdev:", |string| u32::from_str_radix(string, 16))?;
+
+				if unlikely!(remaining_bytes.len() != 0)
+				{
+					return Err(invalid_data())
+				}
+
+				Ok
+				(
+					EPollInformationItem
+					{
+						target_file_descriptor,
+						event_flags,
+						token,
+						position,
+						inode,
+						sdevice,
+					}
+				)
+			}
+		}
+
+		let process_identifier = unsafe { getpid() };
+
+		let mut buffered_reader = BufReader::new(File::open(&format!("/proc/{}/fdinfo/{}", process_identifier as u32, self.0 as u32))?);
+
+		const MaximumBytesPerLine: usize = 256;
+		let mut bytes_read: ArrayVec<[u8; MaximumBytesPerLine]> = ArrayVec::new();
+
+		let header = FileDescriptorInformationHeader
+		{
+			file_offset: bytes_read.parse_header_line(&mut buffered_reader, b"pos:\t", |string| isize::from_str_radix(string, 10))?,
+			file_flags: bytes_read.parse_header_line(&mut buffered_reader, b"flags:\t", |string| u32::from_str_radix(string, 8))?,
+			mount_identifier: bytes_read.parse_header_line(&mut buffered_reader, b"mnt_id:\t", |string| usize::from_str_radix(string, 16))?,
+		};
+
+		Ok((header, InformationIterator { buffered_reader: Some(buffered_reader), bytes_read }))
+	}
 }
+
+#[inline(always)]
+fn extract_space_terminated_value_from_slice<'a, Value, Error>(remaining_bytes: &'a [u8], prefix_including_colon_and_whitespace: &'static [u8], parser: impl FnOnce(&str) -> Result<Value, Error>) -> io::Result<(Value, &'a [u8])>
+{
+	if unlikely!(remaining_bytes.len() < prefix_including_colon_and_whitespace.len())
+	{
+		return Err(invalid_data())
+	}
+
+	if unlikely!(&remaining_bytes[0 .. prefix_including_colon_and_whitespace.len()] != prefix_including_colon_and_whitespace)
+	{
+		return Err(invalid_data())
+	}
+
+	let remaining_bytes = &remaining_bytes[prefix_including_colon_and_whitespace.len() .. ];
+	let raw_value = match memchr(b' ', remaining_bytes)
+	{
+		None => remaining_bytes,
+
+		Some(index) => &remaining_bytes[0 .. index],
+	};
+
+	let raw_value_str = from_utf8(raw_value).map_err(|_utf8_error| invalid_data())?;
+	let value = parser(raw_value_str).map_err(|_utf8_error| invalid_data())?;
+
+	Ok((value, &remaining_bytes[raw_value.len() + 1 .. ]))
+}
+
+#[inline(always)]
+fn extract_fixed_width_value_from_slice<'a, Value, Error>(remaining_bytes: &'a [u8], prefix_including_colon_and_whitespace: &'static [u8], width: usize, parser: impl FnOnce(&str) -> Result<Value, Error>) -> io::Result<(Value, &'a [u8])>
+{
+	if unlikely!(remaining_bytes.len() < (prefix_including_colon_and_whitespace.len() + width))
+	{
+		return Err(invalid_data())
+	}
+
+	if unlikely!(&remaining_bytes[0 .. prefix_including_colon_and_whitespace.len()] != prefix_including_colon_and_whitespace)
+	{
+		return Err(invalid_data())
+	}
+
+	let raw_value = &remaining_bytes[prefix_including_colon_and_whitespace.len() .. prefix_including_colon_and_whitespace.len() + width];
+	let raw_value_str = from_utf8(raw_value).map_err(|_utf8_error| invalid_data())?;
+	let value = parser(raw_value_str).map_err(|_utf8_error| invalid_data())?;
+
+	Ok((value, &remaining_bytes[prefix_including_colon_and_whitespace.len() + width .. ]))
+}
+
+#[inline(always)]
+fn invalid_data() -> io::Error
+{
+	io::Error::from(ErrorKind::InvalidData)
+}
+
+trait ExtendFromSlice: AsRef<[u8]>
+{
+	#[inline(always)]
+	fn parse_header_line<R: BufRead + ?Sized, Value, Error>(&mut self, buf_read: &mut R, field_name_with_colon_and_tab: &[u8], parser: impl FnOnce(&str) -> Result<Value, Error>) -> io::Result<Value>
+	{
+		self.read_until_line_feed(buf_read)?;
+
+		let token: &[u8] = field_name_with_colon_and_tab;
+		if unlikely!(self.length() < token.len())
+		{
+			return Err(invalid_data())
+		}
+
+		if unlikely!(&(self.as_ref())[0 .. token.len()] != token)
+		{
+			return Err(invalid_data())
+		}
+
+		let value =
+		{
+			let raw_value = &(self.as_ref())[token.len()..];
+			let raw_value_utf8 = from_utf8(raw_value).map_err(|_utf8_error| invalid_data())?;
+			parser(raw_value_utf8).map_err(|_parse_error| invalid_data())?
+		};
+
+		self.empty();
+
+		Ok(value)
+	}
+
+	#[inline(always)]
+	fn read_until_line_feed<R: BufRead + ?Sized>(&mut self, buf_read: &mut R) -> io::Result<usize>
+	{
+		self.read_until_delimiter_populating_buffer_with_bytes_read_excluding_delimiter(buf_read, b'\n')
+	}
+
+	fn read_until_delimiter_populating_buffer_with_bytes_read_excluding_delimiter<R: BufRead + ?Sized>(&mut self, buf_read: &mut R, delimiter: u8) -> io::Result<usize>;
+
+	fn extend_from_slice(&mut self, slice: &[u8]) -> io::Result<()>;
+
+	fn length(&self) -> usize;
+
+	fn empty(&mut self);
+}
+
+impl<A: Array<Item=u8>> ExtendFromSlice for ArrayVec<A>
+{
+	#[inline(always)]
+	fn read_until_delimiter_populating_buffer_with_bytes_read_excluding_delimiter<R: BufRead + ?Sized>(&mut self, buf_read: &mut R, delimiter: u8) -> io::Result<usize>
+	{
+		let mut total_bytes_read = 0;
+		loop
+		{
+			let (used, is_delimited) =
+			{
+				let available_slice = match buf_read.fill_buf()
+				{
+					Ok(available_slice) => available_slice,
+
+					Err(error) => if error.kind() == ErrorKind::Interrupted
+					{
+						continue
+					}
+					else
+					{
+						return Err(error)
+					},
+				};
+
+				let delimiter_index = memchr(delimiter, available_slice);
+
+				let index = delimiter_index.unwrap_or(available_slice.len());
+				self.extend_from_slice(&available_slice[0 .. index])?;
+
+				(index, delimiter_index.is_some())
+			};
+
+			if used != 0
+			{
+				buf_read.consume(used);
+				total_bytes_read += used;
+			}
+
+			if is_delimited || used == 0
+			{
+				return Ok(total_bytes_read)
+			}
+		}
+	}
+
+	#[inline(always)]
+	fn extend_from_slice(&mut self, slice: &[u8]) -> io::Result<()>
+	{
+		let original_length = self.len();
+		let slice_length = slice.len();
+		let new_length = original_length + slice_length;
+
+		if new_length > self.capacity()
+		{
+			return Err(invalid_data())
+		}
+
+		let pointer = self.as_mut_slice().as_mut_ptr();
+		unsafe
+		{
+			pointer.add(original_length).copy_from_nonoverlapping(slice.as_ptr(), slice_length);
+			self.set_len(new_length)
+		}
+
+		Ok(())
+	}
+
+	#[inline(always)]
+	fn length(&self) -> usize
+	{
+		self.len()
+	}
+
+	#[inline(always)]
+	fn empty(&mut self)
+	{
+		self.clear()
+	}
+}
+

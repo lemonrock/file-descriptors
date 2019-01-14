@@ -12,11 +12,6 @@ use ::libc::EOVERFLOW;
 use ::libc::EROFS;
 use ::libc::ETXTBSY;
 use ::std::ffi::CString;
-use ::std::io;
-use ::std::io::ErrorKind;
-use ::std::io::Initializer;
-use ::std::io::Read;
-use ::std::io::Write;
 
 
 include!("CharacterDeviceFileDescriptor.rs");

@@ -2,24 +2,16 @@
 // Copyright © 2019 The developers of file-descriptors. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/file-descriptors/master/COPYRIGHT.
 
 
-use super::*;
-use self::syscall::*;
-use ::libc::c_uint;
-use ::libc::c_ulong;
-use ::libc::ENAMETOOLONG;
-use ::libc::ENXIO;
-use ::libc::EOVERFLOW;
-use ::libc::EROFS;
-use ::libc::ESPIPE;
-use ::libc::ETXTBSY;
-use ::libc::iovec;
-use ::std::ffi::CString;
+/// EPoll information item from `/proc`.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct FileDescriptorInformationHeader
+{
+	/// File offset (position).
+	pub file_offset: isize,
 
+	/// Combination of file access mode and file status flags.
+	pub file_flags: u32,
 
-pub(crate) mod syscall;
-
-
-include!("ReceivePipeFileDescriptor.rs");
-include!("SendPipeFileDescriptor.rs");
-include!("SpliceRecipient.rs");
-include!("SpliceSender.rs");
+	/// Mount identifier.
+	pub mount_identifier: usize,
+}

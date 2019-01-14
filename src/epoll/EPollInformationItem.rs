@@ -2,24 +2,25 @@
 // Copyright © 2019 The developers of file-descriptors. See the COPYRIGHT file in the top-level directory of this distribution and at https://raw.githubusercontent.com/lemonrock/file-descriptors/master/COPYRIGHT.
 
 
-use super::*;
-use self::syscall::*;
-use ::libc::c_uint;
-use ::libc::c_ulong;
-use ::libc::ENAMETOOLONG;
-use ::libc::ENXIO;
-use ::libc::EOVERFLOW;
-use ::libc::EROFS;
-use ::libc::ESPIPE;
-use ::libc::ETXTBSY;
-use ::libc::iovec;
-use ::std::ffi::CString;
+/// EPoll information item from `/proc`.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct EPollInformationItem
+{
+	/// File descriptor.
+	pub target_file_descriptor: RawFd,
 
+	/// Combination of event flags registered for this item.
+	pub event_flags: u32,
 
-pub(crate) mod syscall;
+	/// Token registered (`epoll_data_t`).
+	pub token: u64,
 
+	/// ? used for checkpoint-restore (CRIU).
+	pub position: i64,
 
-include!("ReceivePipeFileDescriptor.rs");
-include!("SendPipeFileDescriptor.rs");
-include!("SpliceRecipient.rs");
-include!("SpliceSender.rs");
+	/// ? used for checkpoint-restore (CRIU).
+	pub inode: isize,
+
+	/// ? used for checkpoint-restore (CRIU).
+	pub sdevice: u32,
+}

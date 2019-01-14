@@ -14,7 +14,6 @@ use ::libc::O_DSYNC;
 use ::libc::O_LARGEFILE;
 use ::libc::O_NOATIME;
 use ::libc::O_SYNC;
-use ::std::fs::File;
 
 
 mod syscall;

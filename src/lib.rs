@@ -82,6 +82,7 @@
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate errno;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate libc;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] #[macro_use] extern crate likely;
+#[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate memchr;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate strum;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] #[macro_use] extern crate strum_macros;
 
@@ -90,6 +91,7 @@ cfg_if!
 	if #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))]
 	{
 		use self::terminal::TerminalSettingsError;
+		use ::arrayvec::Array;
 		use ::arrayvec::ArrayVec;
 		use ::errno::errno;
 		use ::errno::Errno;
@@ -121,6 +123,7 @@ cfg_if!
 		use ::libc::ENOTDIR;
 		use ::libc::EPERM;
 		use ::libc::EPIPE;
+		use ::libc::getpid;
 		use ::libc::O_CLOEXEC;
 		use ::libc::O_NONBLOCK;
 		use ::libc::O_RDONLY;
@@ -136,6 +139,7 @@ cfg_if!
 		use ::libc::uint32_t;
 		use ::libc::uint64_t;
 		use ::libc::write;
+		use ::memchr::memchr;
 		use ::std::cmp::Ordering;
 		use ::std::hash::Hash;
 		use ::std::hash::Hasher;
@@ -144,6 +148,14 @@ cfg_if!
 		use ::std::fmt::Debug;
 		use ::std::fmt::Display;
 		use ::std::fmt::Formatter;
+		use ::std::fs::File;
+		use ::std::io;
+		use ::std::io::BufRead;
+		use ::std::io::BufReader;
+		use ::std::io::ErrorKind;
+		use ::std::io::Initializer;
+		use ::std::io::Read;
+		use ::std::io::Write;
 		use ::std::mem::size_of;
 		use ::std::mem::transmute;
 		use ::std::mem::uninitialized;
@@ -155,6 +167,7 @@ cfg_if!
 		use ::std::path::Path;
 		use ::std::ptr::null;
 		use ::std::ptr::null_mut;
+		use ::std::str::from_utf8;
 
 
 		#[cfg(unix)] use ::libc::close;
@@ -227,6 +240,7 @@ cfg_if!
 
 
 		include!("CreationError.rs");
+		include!("FileDescriptorInformationHeader.rs");
 		include!("InvalidPathReason.rs");
 		include!("path_bytes_without_trailing_nul.rs");
 		include!("RawFdExt.rs");

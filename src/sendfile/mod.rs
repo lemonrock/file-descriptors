@@ -4,7 +4,6 @@
 
 use super::*;
 use ::libc::sendfile;
-use ::std::fs::File;
 
 
 include!("SendFile.rs");
