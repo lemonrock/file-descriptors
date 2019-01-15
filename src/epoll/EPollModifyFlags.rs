@@ -68,3 +68,13 @@ impl Into<EPollAddFlags> for EPollModifyFlags
 		unsafe { transmute(self) }
 	}
 }
+
+impl EPollModifyFlags
+{
+	/// Equivalent to `bits()` but constant.
+	#[inline(always)]
+	pub const fn const_bits(self) -> u32
+	{
+		self.bits
+	}
+}

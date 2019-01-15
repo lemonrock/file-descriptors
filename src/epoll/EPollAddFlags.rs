@@ -18,7 +18,6 @@ bitflags!
 		/// The associated file descriptor is available for write operations.
 		const Output = EPOLLOUT;
 
-		// TODO: Review https://stackoverflow.com/questions/6437879/how-do-i-use-epollhup
 		/// Stream socket peer closed connection, or shut down writing half of connection.
 		///
 		/// This flag is especially useful for writing simple code to detect peer shutdown when using Edge Triggered monitoring.
