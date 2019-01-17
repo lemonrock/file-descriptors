@@ -50,13 +50,13 @@ impl SocketFileDescriptor<sockaddr_in>
 	///
 	/// The default value in `/proc/sys/net/core/somaxconn` is `128`.
 	#[inline(always)]
-	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_4_server_listener(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32) -> Result<StreamingServerListenerSocketInternetProtocolVersion4FileDescriptor, NewSocketServerListenerError>
+	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_4_server_listener(socket_address: SocketAddrV4, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32, logical_cpu_identifier: i32) -> Result<StreamingServerListenerSocketInternetProtocolVersion4FileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in>::new_transmission_control_protocol_over_internet_protocol_version_4(send_buffer_size_in_bytes, receive_buffer_size_in_bytes, idles_before_keep_alive_seconds, keep_alive_interval_seconds, maximum_keep_alive_probes, linger_seconds, linger_in_FIN_WAIT2_seconds, maximum_SYN_transmits)?;
 		this.set_internet_protocol_server_listener_socket_options();
 		this.set_tcp_server_listener_socket_options();
 		this.bind_internet_protocol_version_4_socket(socket_address)?;
-		Ok(this.listen(back_log)?)
+		Ok(this.listen(back_log, logical_cpu_identifier)?)
 	}
 
 	/// Creates a new instance of a Transmission Control Protocol (TCP) socket over Internet Protocol (IP) version 4 client.
@@ -114,13 +114,13 @@ impl SocketFileDescriptor<sockaddr_in6>
 	///
 	/// The default value in `/proc/sys/net/core/somaxconn` is `128`.
 	#[inline(always)]
-	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_6_server_listener(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32) -> Result<StreamingServerListenerSocketInternetProtocolVersion6FileDescriptor, NewSocketServerListenerError>
+	pub(crate) fn new_transmission_control_protocol_over_internet_protocol_version_6_server_listener(socket_address: SocketAddrV6, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32, logical_cpu_identifier: i32) -> Result<StreamingServerListenerSocketInternetProtocolVersion6FileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_in6>::new_transmission_control_protocol_over_internet_protocol_version_6(send_buffer_size_in_bytes, receive_buffer_size_in_bytes, idles_before_keep_alive_seconds, keep_alive_interval_seconds, maximum_keep_alive_probes, linger_seconds, linger_in_FIN_WAIT2_seconds, maximum_SYN_transmits)?;
 		this.set_internet_protocol_server_listener_socket_options();
 		this.set_tcp_server_listener_socket_options();
 		this.bind_internet_protocol_version_6_socket(socket_address)?;
-		Ok(this.listen(back_log)?)
+		Ok(this.listen(back_log, logical_cpu_identifier)?)
 	}
 
 	/// Creates a new instance of a Transmission Control Protocol (TCP) socket over Internet Protocol (IP) version 6 client.
@@ -389,12 +389,16 @@ impl SocketFileDescriptor<sockaddr_un>
 	/// Creates a new streaming Unix Domain server listener socket.
 	///
 	/// This is local socket akin to a Transmission Control Protocol (TCP) socket.
+	///
+	/// `back_log` can not exceed `::std::i32::MAX` and is capped by the Operating System to the value in `/proc/sys/net/core/somaxconn`.
+	///
+	/// The default value in `/proc/sys/net/core/somaxconn` is `128`.
 	#[inline(always)]
-	pub(crate) fn new_streaming_unix_domain_socket_server_listener(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize) -> Result<StreamingServerListenerSocketUnixDomainFileDescriptor, NewSocketServerListenerError>
+	pub(crate) fn new_streaming_unix_domain_socket_server_listener(unix_socket_address: &UnixSocketAddress<impl AsRef<Path>>, send_buffer_size_in_bytes: usize, back_log: u32, logical_cpu_identifier: i32) -> Result<StreamingServerListenerSocketUnixDomainFileDescriptor, NewSocketServerListenerError>
 	{
 		let this = SocketFileDescriptor::<sockaddr_un>::new_streaming_unix_domain_socket(send_buffer_size_in_bytes)?;
 		this.bind_unix_domain_socket(unix_socket_address)?;
-		Ok(this.listen(0)?)
+		Ok(this.listen(back_log, logical_cpu_identifier)?)
 	}
 
 	/// Creates a new streaming Unix Domain client socket.
@@ -566,6 +570,13 @@ impl SocketFileDescriptor<sockaddr_un>
 
 impl<SD: SocketData> SocketFileDescriptor<SD>
 {
+	/// This is mostly useful for `StreamingSocketFileDescriptors` after `connect()` or created by `accept()`, to identify an appropriate CPU to most efficiently handle the network traffic.
+	#[inline(always)]
+	pub fn logical_cpu_identifier(&self) -> i32
+	{
+		self.get_socket_option(SOL_SOCKET, SO_INCOMING_CPU)
+	}
+
 	/// Obtain our local address and its length; the length is essential when interpreting Unix Domain Sockets.
 	#[inline(always)]
 	pub fn local_address(&self) -> Result<(SD, usize), ()>
@@ -599,13 +610,14 @@ impl<SD: SocketData> SocketFileDescriptor<SD>
 	}
 
 	#[inline(always)]
-	fn listen(self, back_log: u32) -> Result<StreamingServerListenerSocketFileDescriptor<SD>, SocketListenError>
+	fn listen(self, back_log: u32, logical_cpu_identifier: i32) -> Result<StreamingServerListenerSocketFileDescriptor<SD>, SocketListenError>
 	{
 		debug_assert!(back_log <= ::std::i32::MAX as u32, "back_log can not be greater than :std::i32::MAX");
 
 		let result = unsafe { listen(self.0, back_log as i32) };
 		if likely!(result == 0)
 		{
+			self.set_socket_option(SOL_SOCKET, SO_INCOMING_CPU, &logical_cpu_identifier);
 			Ok(StreamingServerListenerSocketFileDescriptor(self))
 		}
 		else if likely!(result == -1)

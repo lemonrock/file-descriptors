@@ -244,6 +244,7 @@ pub(crate) const SO_SECURITY_ENCRYPTION_TRANSPORT: c_int = 23;
 #[allow(dead_code)]
 pub(crate) const SO_SECURITY_ENCRYPTION_NETWORK: c_int = 24;
 
+#[allow(dead_code)]
 pub(crate) const SO_BINDTODEVICE: c_int = 25;
 
 #[allow(dead_code)]
