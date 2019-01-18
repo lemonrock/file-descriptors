@@ -52,6 +52,17 @@ impl<SD: SocketData> FromRawFd for DatagramServerListenerSocketFileDescriptor<SD
 	}
 }
 
+impl<SD: SocketData> Deref for DatagramServerListenerSocketFileDescriptor<SD>
+{
+	type Target = SocketFileDescriptor<SD>;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target
+	{
+		&self.0
+	}
+}
+
 impl DatagramServerListenerSocketFileDescriptor<sockaddr_un>
 {
 	/// Receive file descriptors.

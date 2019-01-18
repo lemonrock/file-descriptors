@@ -52,6 +52,17 @@ impl<SD: SocketData> FromRawFd for DatagramClientSocketFileDescriptor<SD>
 	}
 }
 
+impl<SD: SocketData> Deref for DatagramClientSocketFileDescriptor<SD>
+{
+	type Target = SocketFileDescriptor<SD>;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target
+	{
+		&self.0
+	}
+}
+
 impl<SD: SocketData> DatagramClientSocketFileDescriptor<SD>
 {
 	/// Receive messages up to the maximum capacity of `received_messages`.

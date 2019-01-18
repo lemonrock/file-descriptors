@@ -33,6 +33,17 @@ impl<SD: SocketData> FromRawFd for StreamingServerListenerSocketFileDescriptor<S
 	}
 }
 
+impl<SD: SocketData> Deref for StreamingServerListenerSocketFileDescriptor<SD>
+{
+	type Target = SocketFileDescriptor<SD>;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target
+	{
+		&self.0
+	}
+}
+
 impl<SD: SocketData> StreamingServerListenerSocketFileDescriptor<SD>
 {
 	/// Accepts any pending connections.

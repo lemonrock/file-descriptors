@@ -52,6 +52,17 @@ impl<SD: SocketData> FromRawFd for StreamingSocketFileDescriptor<SD>
 	}
 }
 
+impl<SD: SocketData> Deref for StreamingSocketFileDescriptor<SD>
+{
+	type Target = SocketFileDescriptor<SD>;
+
+	#[inline(always)]
+	fn deref(&self) -> &Self::Target
+	{
+		&self.0
+	}
+}
+
 impl<SD: SocketData> SpliceRecipient for StreamingSocketFileDescriptor<SD>
 {
 }
