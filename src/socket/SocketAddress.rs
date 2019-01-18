@@ -22,7 +22,7 @@ impl<FilePath: AsRef<Path>> SocketAddress<FilePath>
 	///
 	/// `logical_cpu_identifier` for the CPU the current thread is executing on can be obtained by using `unsafe { ::libc::sched_getcpu() }` on Linux.
 	#[inline(always)]
-	pub fn new_streaming_server_listener(&self, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32, logical_cpu_identifier: i32) -> Result<StreamingServerListenerSocketFileDescriptorEnum, NewSocketServerListenerError>
+	pub fn new_streaming_server_listener(&self, send_buffer_size_in_bytes: usize, receive_buffer_size_in_bytes: usize, idles_before_keep_alive_seconds: u16, keep_alive_interval_seconds: u16, maximum_keep_alive_probes: u16, linger_seconds: u16, linger_in_FIN_WAIT2_seconds: u16, maximum_SYN_transmits: u16, back_log: u32, logical_cpu_identifier: u16) -> Result<StreamingServerListenerSocketFileDescriptorEnum, NewSocketServerListenerError>
 	{
 		use self::StreamingServerListenerSocketFileDescriptorEnum::*;
 		use self::SocketAddr::*;

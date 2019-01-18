@@ -43,6 +43,14 @@ impl SpliceSender for TerminalFileDescriptor
 {
 }
 
+impl VectoredRead for TerminalFileDescriptor
+{
+}
+
+impl VectoredWrite for TerminalFileDescriptor
+{
+}
+
 impl Read for TerminalFileDescriptor
 {
 	/// This particular implementation can only return an `io::ErrorKind` of:-

@@ -103,24 +103,32 @@ cfg_if!
 		use ::libc::EAGAIN;
 		use ::libc::EBADF;
 		use ::libc::ECANCELED;
+		use ::libc::ECONNREFUSED;
+		use ::libc::ECONNRESET;
 		use ::libc::EDESTADDRREQ;
 		use ::libc::EDQUOT;
 		use ::libc::EEXIST;
 		use ::libc::EFAULT;
 		use ::libc::EFBIG;
+		use ::libc::EISCONN;
 		use ::libc::EINTR;
 		use ::libc::EINVAL;
 		use ::libc::EIO;
 		use ::libc::EISDIR;
 		use ::libc::ELOOP;
 		use ::libc::EMFILE;
+		use ::libc::EMSGSIZE;
 		use ::libc::ENFILE;
 		use ::libc::ENODEV;
+		use ::libc::ENOBUFS;
 		use ::libc::ENOENT;
 		use ::libc::ENOMEM;
 		use ::libc::ENOSPC;
 		use ::libc::ENOSYS;
+		use ::libc::ENOTCONN;
 		use ::libc::ENOTDIR;
+		use ::libc::ENOTSOCK;
+		use ::libc::EOPNOTSUPP;
 		use ::libc::EPERM;
 		use ::libc::EPIPE;
 		use ::libc::getpid;
@@ -130,8 +138,10 @@ cfg_if!
 		use ::libc::O_RDWR;
 		use ::libc::O_WRONLY;
 		use ::libc::int32_t;
+		use ::libc::iovec;
 		use ::libc::pid_t;
 		use ::libc::read;
+		use ::libc::readv;
 		use ::libc::sigset_t;
 		use ::libc::size_t;
 		use ::libc::uint8_t;
@@ -139,6 +149,7 @@ cfg_if!
 		use ::libc::uint32_t;
 		use ::libc::uint64_t;
 		use ::libc::write;
+		use ::libc::writev;
 		use ::memchr::memchr;
 		use ::std::cmp::Ordering;
 		use ::std::hash::Hash;
@@ -250,6 +261,8 @@ cfg_if!
 		include!("SpecialFileOpenError.rs");
 		include!("StructReadError.rs");
 		include!("StructWriteError.rs");
+		include!("VectoredRead.rs");
+		include!("VectoredWrite.rs");
 	}
 }
 

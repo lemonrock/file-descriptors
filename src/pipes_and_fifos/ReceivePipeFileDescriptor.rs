@@ -49,6 +49,10 @@ impl SpliceSender for ReceivePipeFileDescriptor
 {
 }
 
+impl VectoredRead for ReceivePipeFileDescriptor
+{
+}
+
 impl Read for ReceivePipeFileDescriptor
 {
 	/// This particular implementation can only return an `io::ErrorKind` of:-

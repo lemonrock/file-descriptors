@@ -63,6 +63,14 @@ impl<SD: SocketData> Deref for StreamingSocketFileDescriptor<SD>
 	}
 }
 
+impl<SD: SocketData> VectoredRead for StreamingSocketFileDescriptor<SD>
+{
+}
+
+impl<SD: SocketData> VectoredWrite for StreamingSocketFileDescriptor<SD>
+{
+}
+
 impl<SD: SocketData> SpliceRecipient for StreamingSocketFileDescriptor<SD>
 {
 }

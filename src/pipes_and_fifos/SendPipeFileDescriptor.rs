@@ -46,6 +46,10 @@ impl FromRawFd for SendPipeFileDescriptor
 	}
 }
 
+impl VectoredWrite for SendPipeFileDescriptor
+{
+}
+
 impl SpliceRecipient for SendPipeFileDescriptor
 {
 }
