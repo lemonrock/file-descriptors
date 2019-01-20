@@ -9,7 +9,6 @@
 #![deny(unreachable_patterns)]
 #![feature(core_intrinsics)]
 #![feature(read_initializer)]
-#![feature(self_struct_ctor)]
 #![feature(try_from)]
 
 

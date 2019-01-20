@@ -3,6 +3,7 @@
 
 
 /// An Unix socket address.
+#[derive(Debug)]
 pub enum UnixSocketAddress<FilePath: AsRef<Path>>
 {
 	/// A file in a file system.
