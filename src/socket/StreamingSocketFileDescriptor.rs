@@ -160,48 +160,46 @@ impl<SD: SocketData> SendFile for StreamingSocketFileDescriptor<SD>
 	}
 }
 
-impl StreamingSocketFileDescriptor<sockaddr_un>
+impl<SD: SocketData> Read for StreamingSocketFileDescriptor<SD>
 {
-	/// Tries to obtain remote peer credentials.
+	/// This particular implementation wraps `self.receive_from()`.
 	///
-	/// The returned credentials are those that were in effect at the time of the call to `connect()` or `socketpair()`.
+	/// See its documentation for the restricted range of errors that can be returned.
 	#[inline(always)]
-	pub fn remote_peer_credentials(&self) -> Credentials
+	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize>
 	{
-		self.0.remote_peer_credentials()
+		self.receive_from(buf)
 	}
 
-	/// Receive file descriptors.
-	pub fn receive_file_descriptors(&self, maximum_file_descriptors_to_receive: usize) -> Result<Vec<RawFd>, ReceiveFileDescriptorsError>
-	{
-		self.0.receive_file_descriptors(maximum_file_descriptors_to_receive)
-	}
-
-	/// Tries to send file descriptors to a remote peer over an Unix Domain Socket.
-	///
-	/// `file_descriptors`: File Descriptors to send.
 	#[inline(always)]
-	pub fn send_file_descriptors(&self, file_descriptors: &[RawFd]) -> io::Result<()>
+	unsafe fn initializer(&self) -> Initializer
 	{
-		self.0.send_file_descriptors(file_descriptors)
-	}
-
-	/// Tries to send credentials to a remote peer over an Unix Domain Socket.
-	///
-	/// Useful for complex scenarios where a priveleged (eg root) process wants to use different credentials to those it would default to.
-	///
-	/// `process_identifier`: Process identifier (also known as `pid`). Unless the process has capability `CAP_SYS_ADMIN`, this must be its own `process_identifier`.
-	/// `user_identifier`: User identifier (also known as `uid`). Unless the process has capability `CAP_SETUID`, this must be its own `user_identifier`, effective `user_identifier` or saved-set `user_identifier`.
-	/// `group_identifier`: Group identifier (also known as `gid`). Unless the process has capability `CAP_SETGID`, this must be its own `group_identifier`, effective `group_identifier` or saved-set `group_identifier`.
-	#[inline(always)]
-	pub fn send_credentials(&self, credentials: Credentials) -> io::Result<()>
-	{
-		self.0.send_credentials(credentials)
+		Initializer::nop()
 	}
 }
 
-impl<SD: SocketData> Read for StreamingSocketFileDescriptor<SD>
+impl<SD: SocketData> Write for StreamingSocketFileDescriptor<SD>
 {
+	/// This particular implementation wraps `self.send_to()`.
+	///
+	/// See its documentation for the restricted range of errors that can be returned.
+	#[inline(always)]
+	fn write(&mut self, buf: &[u8]) -> io::Result<usize>
+	{
+		self.send_to(buf)
+	}
+
+	#[inline(always)]
+	fn flush(&mut self) -> io::Result<()>
+	{
+		Ok(())
+	}
+}
+
+impl<SD: SocketData> StreamingSocketFileDescriptor<SD>
+{
+	/// This is wrapped by `io::Read::read()` but is exposed as it does not require a mutable reference.
+	///
 	/// This particular implementation can only return an `io::ErrorKind` of:-
 	///
 	/// * `UnexpectedEof`
@@ -211,7 +209,7 @@ impl<SD: SocketData> Read for StreamingSocketFileDescriptor<SD>
 	/// * `ConnectionReset` (seems to be posible in some circumstances for Unix domain sockets).
 	/// * `ConnectionRefused` (only can happen for TCP client sockets; can not happen for sockets `accept()`ed by a server listener).
 	#[inline(always)]
-	fn read(&mut self, buf: &mut [u8]) -> io::Result<usize>
+	pub fn receive_from(&self, buf: &mut [u8]) -> io::Result<usize>
 	{
 		let length = buf.len();
 		if unlikely!(length == 0)
@@ -264,15 +262,8 @@ impl<SD: SocketData> Read for StreamingSocketFileDescriptor<SD>
 		}
 	}
 
-	#[inline(always)]
-	unsafe fn initializer(&self) -> Initializer
-	{
-		Initializer::nop()
-	}
-}
-
-impl<SD: SocketData> Write for StreamingSocketFileDescriptor<SD>
-{
+	/// This is wrapped by `io::Read::read()` but is exposed as it does not require a mutable reference.
+	///
 	/// This particular implementation can only return an `io::ErrorKind` of:-
 	///
 	/// * `WriteZero`
@@ -283,7 +274,7 @@ impl<SD: SocketData> Write for StreamingSocketFileDescriptor<SD>
 	/// * `PermissionDenied` (only for Unix domain sockets).
 	/// * `ConnectionReset`
 	#[inline(always)]
-	fn write(&mut self, buf: &[u8]) -> io::Result<usize>
+	pub fn send_to(&self, buf: &[u8]) -> io::Result<usize>
 	{
 		let length = buf.len();
 
@@ -340,10 +331,44 @@ impl<SD: SocketData> Write for StreamingSocketFileDescriptor<SD>
 			)
 		}
 	}
+}
 
+impl StreamingSocketFileDescriptor<sockaddr_un>
+{
+	/// Tries to obtain remote peer credentials.
+	///
+	/// The returned credentials are those that were in effect at the time of the call to `connect()` or `socketpair()`.
 	#[inline(always)]
-	fn flush(&mut self) -> io::Result<()>
+	pub fn remote_peer_credentials(&self) -> Credentials
 	{
-		Ok(())
+		self.0.remote_peer_credentials()
+	}
+
+	/// Receive file descriptors.
+	pub fn receive_file_descriptors(&self, maximum_file_descriptors_to_receive: usize) -> Result<Vec<RawFd>, ReceiveFileDescriptorsError>
+	{
+		self.0.receive_file_descriptors(maximum_file_descriptors_to_receive)
+	}
+
+	/// Tries to send file descriptors to a remote peer over an Unix Domain Socket.
+	///
+	/// `file_descriptors`: File Descriptors to send.
+	#[inline(always)]
+	pub fn send_file_descriptors(&self, file_descriptors: &[RawFd]) -> io::Result<()>
+	{
+		self.0.send_file_descriptors(file_descriptors)
+	}
+
+	/// Tries to send credentials to a remote peer over an Unix Domain Socket.
+	///
+	/// Useful for complex scenarios where a priveleged (eg root) process wants to use different credentials to those it would default to.
+	///
+	/// `process_identifier`: Process identifier (also known as `pid`). Unless the process has capability `CAP_SYS_ADMIN`, this must be its own `process_identifier`.
+	/// `user_identifier`: User identifier (also known as `uid`). Unless the process has capability `CAP_SETUID`, this must be its own `user_identifier`, effective `user_identifier` or saved-set `user_identifier`.
+	/// `group_identifier`: Group identifier (also known as `gid`). Unless the process has capability `CAP_SETGID`, this must be its own `group_identifier`, effective `group_identifier` or saved-set `group_identifier`.
+	#[inline(always)]
+	pub fn send_credentials(&self, credentials: Credentials) -> io::Result<()>
+	{
+		self.0.send_credentials(credentials)
 	}
 }
