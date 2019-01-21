@@ -79,6 +79,9 @@ bitflags!
 
 		/// Used for signalfd, eventfd, timerfd and similar file descriptors.
 		const EdgeTriggeredInput = EPOLLIN | EPOLLET;
+
+		/// Used for listening sockets.
+		const EdgeTriggeredInputExclusive = EPOLLIN | EPOLLET | EPOLLEXCLUSIVE;
 	}
 }
 

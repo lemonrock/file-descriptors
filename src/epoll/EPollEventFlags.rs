@@ -44,6 +44,12 @@ bitflags!
 		///
 		/// Treat as an error.
 		const OtherErrorOrNoBuffersQueued = EPOLLNVAL;
+
+		/// Flags whose presence indicates that a TCP connection should be closed or has been closed.
+		const CloseWithError = EPOLLPRI | EPOLLRDBAND | EPOLLERR | EPOLLNVAL;
+
+		/// Flags whose presence indicates that a TCP remote peer closed cleanly.
+		const RemotePeerClosedCleanly = EPOLLRDHUP | EPOLLHUP;
 	}
 }
 
