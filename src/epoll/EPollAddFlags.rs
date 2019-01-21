@@ -82,6 +82,9 @@ bitflags!
 
 		/// Used for listening sockets.
 		const EdgeTriggeredInputExclusive = EPOLLIN | EPOLLET | EPOLLEXCLUSIVE;
+
+		/// Used for TCP streaming sockets.
+		const Streaming = EPOLLIN | EPOLLPRI | EPOLLOUT | EPOLLRDHUP | EPOLLET;
 	}
 }
 
