@@ -15,16 +15,18 @@ exclude = ["*"]
 include = ["README.md", "LICENSE", "COPYRIGHT", "src/**/*.rs", "Cargo.toml", "rustfmt.toml", "clippy.toml"]
 readme = "README.md"
 publish = true
-version = "0.8.5"
+version = "0.8.6"
 
 [dependencies]
 cfg-if = "^0.1.6"
+
+[target.'cfg(unix)'.dependencies]
+libc = "^0.2.44"
 
 [target.'cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris",  target_env = "uclibc"))'.dependencies]
 arrayvec = { version = "^0.4.9", features = ["array-sizes-33-128"] }
 bitflags = "^1.0"
 errno = "^0.2.4"
-libc = "^0.2.44"
 likely = "^0.1"
 memchr = "^2.1.2"
 strum = "0.13.0"

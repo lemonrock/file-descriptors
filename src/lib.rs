@@ -79,11 +79,21 @@
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] #[macro_use] extern crate bitflags;
 #[macro_use] extern crate cfg_if;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate errno;
-#[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate libc;
+#[cfg(unix)] extern crate libc;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] #[macro_use] extern crate likely;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate memchr;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] extern crate strum;
 #[cfg(any(target_os = "android", target_os = "emscripten", target_os = "fuschia", target_os = "linux", target_os = "solaris", target_env = "uclibc"))] #[macro_use] extern crate strum_macros;
+
+cfg_if!
+{
+	if #[cfg(unix)]
+	{
+		use ::libc::close;
+		use ::std::os::unix::io::RawFd;
+		include!("RawFdExt.rs");
+	}
+}
 
 cfg_if!
 {
@@ -180,10 +190,6 @@ cfg_if!
 		use ::std::str::from_utf8;
 
 
-		#[cfg(unix)] use ::libc::close;
-		#[cfg(unix)] use ::std::os::unix::io::RawFd;
-
-
 		/// Character device file descriptors.
 		pub mod character_device;
 
@@ -256,7 +262,6 @@ cfg_if!
 		include!("CreationError.rs");
 		include!("InvalidPathReason.rs");
 		include!("path_bytes_without_trailing_nul.rs");
-		include!("RawFdExt.rs");
 		include!("SpecialFileOpenError.rs");
 		include!("StructReadError.rs");
 		include!("StructWriteError.rs");
@@ -264,4 +269,3 @@ cfg_if!
 		include!("VectoredWrite.rs");
 	}
 }
-
