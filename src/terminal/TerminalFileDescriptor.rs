@@ -17,6 +17,10 @@ impl AsRawFd for TerminalFileDescriptor
 	}
 }
 
+impl AsRawFdExt for TerminalFileDescriptor
+{
+}
+
 impl IntoRawFd for TerminalFileDescriptor
 {
 	#[inline(always)]

@@ -24,6 +24,10 @@ impl AsRawFd for EventFileDescriptor
 	}
 }
 
+impl AsRawFdExt for EventFileDescriptor
+{
+}
+
 impl IntoRawFd for EventFileDescriptor
 {
 	#[inline(always)]

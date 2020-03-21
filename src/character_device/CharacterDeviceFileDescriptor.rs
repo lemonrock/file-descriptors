@@ -26,6 +26,10 @@ impl AsRawFd for CharacterDeviceFileDescriptor
 	}
 }
 
+impl AsRawFdExt for CharacterDeviceFileDescriptor
+{
+}
+
 impl IntoRawFd for CharacterDeviceFileDescriptor
 {
 	#[inline(always)]

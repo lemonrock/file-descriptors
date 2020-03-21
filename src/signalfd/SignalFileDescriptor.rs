@@ -29,6 +29,10 @@ impl AsRawFd for SignalFileDescriptor
 	}
 }
 
+impl AsRawFdExt for SignalFileDescriptor
+{
+}
+
 impl IntoRawFd for SignalFileDescriptor
 {
 	#[inline(always)]

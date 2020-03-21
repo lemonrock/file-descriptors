@@ -32,6 +32,10 @@ impl AsRawFd for StreamingSocketFileDescriptorEnum
 	}
 }
 
+impl AsRawFdExt for StreamingSocketFileDescriptorEnum
+{
+}
+
 impl Read for StreamingSocketFileDescriptorEnum
 {
 	/// This particular implementation can only return an `io::ErrorKind` of:-

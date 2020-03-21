@@ -139,6 +139,9 @@ cfg_if!
 		use ::libc::EOPNOTSUPP;
 		use ::libc::EPERM;
 		use ::libc::EPIPE;
+		use ::libc::F_GETFL;
+		use ::libc::F_SETFL;
+		use ::libc::fcntl;
 		use ::libc::getpid;
 		use ::libc::O_CLOEXEC;
 		use ::libc::O_NONBLOCK;
@@ -258,6 +261,7 @@ cfg_if!
 		pub mod timerfd;
 
 
+		include!("AsRawFdExt.rs");
 		include!("CreationError.rs");
 		include!("InvalidPathReason.rs");
 		include!("path_bytes_without_trailing_nul.rs");

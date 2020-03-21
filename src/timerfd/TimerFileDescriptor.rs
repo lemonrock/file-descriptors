@@ -24,6 +24,10 @@ impl AsRawFd for TimerFileDescriptor
 	}
 }
 
+impl AsRawFdExt for TimerFileDescriptor
+{
+}
+
 impl IntoRawFd for TimerFileDescriptor
 {
 	#[inline(always)]

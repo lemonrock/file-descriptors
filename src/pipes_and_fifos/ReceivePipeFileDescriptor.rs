@@ -27,6 +27,10 @@ impl AsRawFd for ReceivePipeFileDescriptor
 	}
 }
 
+impl AsRawFdExt for ReceivePipeFileDescriptor
+{
+}
+
 impl IntoRawFd for ReceivePipeFileDescriptor
 {
 	#[inline(always)]

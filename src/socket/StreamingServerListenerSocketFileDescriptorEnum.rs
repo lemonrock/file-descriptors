@@ -32,6 +32,10 @@ impl AsRawFd for StreamingServerListenerSocketFileDescriptorEnum
 	}
 }
 
+impl AsRawFdExt for StreamingServerListenerSocketFileDescriptorEnum
+{
+}
+
 impl IntoRawFd for StreamingServerListenerSocketFileDescriptorEnum
 {
 	#[inline(always)]

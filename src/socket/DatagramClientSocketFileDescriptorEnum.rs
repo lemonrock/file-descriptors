@@ -31,3 +31,7 @@ impl AsRawFd for DatagramClientSocketFileDescriptorEnum
 		}
 	}
 }
+
+impl AsRawFdExt for DatagramClientSocketFileDescriptorEnum
+{
+}

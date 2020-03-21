@@ -23,6 +23,10 @@ impl AsRawFd for PosixMessageQueueFileDescriptor
 	}
 }
 
+impl AsRawFdExt for PosixMessageQueueFileDescriptor
+{
+}
+
 impl IntoRawFd for PosixMessageQueueFileDescriptor
 {
 	#[inline(always)]
