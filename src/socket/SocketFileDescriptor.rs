@@ -209,7 +209,7 @@ impl SocketFileDescriptor<sockaddr_un>
 		let file_descriptor_end_pointer =
 		{
 			let mut borrow_checker = message.first_header_mut();
-			let mut first_header = borrow_checker.as_mut().unwrap();
+			let first_header = borrow_checker.as_mut().unwrap();
 			first_header.initialize_known_fields(SOL_SOCKET, SCM_RIGHTS, size_of::<RawFd>() * maximum_file_descriptors_to_receive);
 			let mut file_descriptor_current_pointer = first_header.CMSG_DATA_mut() as *mut RawFd;
 			let file_descriptor_end_pointer = unsafe { file_descriptor_current_pointer.add(maximum_file_descriptors_to_receive) };
@@ -728,6 +728,7 @@ impl<SD: SocketData> SocketFileDescriptor<SD>
 	#[inline(always)]
 	fn get_socket_option<T>(&self, level: c_int, optname: c_int) -> T
 	{
+		#[allow(deprecated)]
 		let mut value: T = unsafe { uninitialized() };
 		let mut value_length = size_of::<T>() as u32;
 		let result = unsafe { getsockopt(self.0, level, optname, &mut value as *mut _ as *mut _, &mut value_length) };
@@ -990,6 +991,7 @@ impl<SD: SocketData> SocketFileDescriptor<SD>
 		const domain: c_int = AF_UNIX;
 		const ethernet_protocol: c_int = 0;
 
+		#[allow(deprecated)]
 		let mut sv = unsafe { uninitialized() };
 		let result = unsafe { socketpair(domain, Self::type_and_flags(type_), ethernet_protocol, &mut sv) };
 

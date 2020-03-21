@@ -80,6 +80,7 @@ impl TimerFileDescriptor
 	{
 		use self::StructReadError::*;
 
+		#[allow(deprecated)]
 		let mut value: u64 = unsafe { uninitialized() };
 
 		const SizeOfRead: usize = size_of::<u64>();
@@ -123,6 +124,7 @@ impl TimerFileDescriptor
 	#[inline(always)]
 	pub fn get(&self) -> itimerspec
 	{
+		#[allow(deprecated)]
 		let mut current_value = unsafe { uninitialized() };
 		let result = unsafe { timerfd_gettime(self.0, &mut current_value) };
 		if likely!(result == 0)
@@ -228,6 +230,7 @@ impl TimerFileDescriptor
 		debug_assert!(new_value.it_interval.tv_nsec <= 999_999_999, "new_value.it_interval must not exceed 999,999,999");
 		debug_assert!(new_value.it_value.tv_nsec <= 999_999_999, "new_value.it_value must not exceed 999,999,999");
 
+		#[allow(deprecated)]
 		let mut old_value = unsafe { uninitialized() };
 		let result = unsafe { timerfd_settime(self.0, interpretation_of_new_value as i32, new_value, &mut old_value) };
 		if likely!(result == 0)

@@ -65,6 +65,7 @@ impl msghdr
 	#[cfg(target_pointer_width = "64")]
 	pub(crate) fn new(msg_name: *mut c_void, msg_namelen: socklen_t, msg_iov: *mut iovec, msg_iovlen: socklen_t, msg_control: *mut c_void, msg_controllen: socklen_t, msg_flags: c_int) -> Self
 	{
+		#[allow(deprecated)]
 		Self
 		{
 			msg_name,
@@ -143,7 +144,7 @@ impl msghdr
 	#[inline(always)]
 	pub(crate) fn end(&self) -> usize
 	{
-		((self.msg_control as usize) + (self.msg_controllen as usize))
+		(self.msg_control as usize) + (self.msg_controllen as usize)
 	}
 
 //	#[inline(always)]

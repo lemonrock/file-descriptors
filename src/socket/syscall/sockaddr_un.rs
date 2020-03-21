@@ -127,6 +127,7 @@ impl SocketData for sockaddr_un
 			{
 				unsafe
 				{
+					#[allow(deprecated)]
 					let mut copy: [c_char; sockaddr_un::PathLength + 1] = uninitialized();
 					copy.as_mut_ptr().copy_from_nonoverlapping(local_address.sun_path.as_ptr(), sockaddr_un::PathLength);
 					*copy.get_unchecked_mut(sockaddr_un::PathLength) = AsciiNull;

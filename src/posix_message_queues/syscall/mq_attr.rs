@@ -42,6 +42,7 @@ impl mq_attr
 	#[inline(always)]
 	pub(crate) fn for_create(optional_message_queue_create_settings: &OptionalPosixMessageQueueCreateSettings) -> Self
 	{
+		#[allow(deprecated)]
 		Self
 		{
 			mq_flags: unsafe { uninitialized() },

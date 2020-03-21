@@ -25,7 +25,7 @@ impl Display for TerminalSettingsError
 impl error::Error for TerminalSettingsError
 {
 	#[inline(always)]
-	fn source(&self) ->  Option<&(error::Error + 'static)>
+	fn source(&self) ->  Option<&(dyn error::Error + 'static)>
 	{
 		use self::TerminalSettingsError::*;
 

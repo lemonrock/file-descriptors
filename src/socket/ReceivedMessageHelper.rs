@@ -32,6 +32,7 @@ impl<'a, SD: SocketData> ReceivedMessageHelper<'a, SD>
 				c_iovec
 			};
 
+			#[allow(deprecated)]
 			mmsghdr
 			{
 				msg_hdr: msghdr::new(&mut self.remote_peer_address as *mut _ as *mut _, size_of::<SD>() as u32, c_iovec, 1, null_mut(), 0, uninitialized()),

@@ -38,7 +38,7 @@ impl Display for SpecialFileOpenError
 impl error::Error for SpecialFileOpenError
 {
 	#[inline(always)]
-	fn source(&self) ->  Option<&(error::Error + 'static)>
+	fn source(&self) ->  Option<&(dyn error::Error + 'static)>
 	{
 		use self::SpecialFileOpenError::*;
 

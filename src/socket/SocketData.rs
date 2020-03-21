@@ -11,7 +11,6 @@ use ::std::path::Path;
 pub trait SocketData: Sized + Default
 {
 	/// Socket family (eg `AF_UNIX`).
-	#[inline(always)]
 	fn family(&self) -> sa_family_t;
 
 	#[doc(hidden)]

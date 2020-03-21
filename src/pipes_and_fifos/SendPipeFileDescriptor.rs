@@ -54,6 +54,15 @@ impl SpliceRecipient for SendPipeFileDescriptor
 {
 }
 
+impl PipeFileDescriptor for SendPipeFileDescriptor
+{
+	#[inline(always)]
+	fn clone_for_child_process(&self) -> Self
+	{
+		unsafe { transmute_copy(self) }
+	}
+}
+
 impl Write for SendPipeFileDescriptor
 {
 	/// This particular implementation can only return an `io::ErrorKind` of:-
@@ -156,6 +165,7 @@ impl SendPipeFileDescriptor
 	#[inline(always)]
 	pub fn new_anonymous_pipe() -> Result<(Self, ReceivePipeFileDescriptor), CreationError>
 	{
+		#[allow(deprecated)]
 		let mut pipe_file_descriptors = unsafe { uninitialized() };
 		let result = unsafe { pipe2(&mut pipe_file_descriptors, O_NONBLOCK | O_CLOEXEC) };
 		if likely!(result == 0)

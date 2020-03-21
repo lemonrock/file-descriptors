@@ -9,7 +9,6 @@
 #![deny(unreachable_patterns)]
 #![feature(core_intrinsics)]
 #![feature(read_initializer)]
-#![feature(try_from)]
 
 
 //! #file-descriptors
@@ -178,7 +177,7 @@ cfg_if!
 		use ::std::io::Write;
 		use ::std::mem::size_of;
 		use ::std::mem::transmute;
-		use ::std::mem::uninitialized;
+		#[allow(deprecated)] use ::std::mem::uninitialized;
 		use ::std::mem::zeroed;
 		use ::std::os::unix::ffi::OsStrExt;
 		use ::std::os::unix::io::AsRawFd;

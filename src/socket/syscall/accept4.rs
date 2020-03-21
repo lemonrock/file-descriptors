@@ -44,6 +44,5 @@ extern "C"
 	/// * `EPROTONOSUPPORT`: ?
 	/// * `ETIMEDOUT`: Treat as for `ECONNABORTED`?
 	/// * `ERESTARTSYS`: ? Should never be seen by user programs, but man page implies it can occur during 'tracing'.
-	#[inline(always)]
 	pub(crate) fn accept4(sockfd: RawFd, addr: *mut sockaddr_storage, addrlen: *mut socklen_t, flags: c_int) -> c_int;
 }

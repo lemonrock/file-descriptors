@@ -151,10 +151,10 @@ impl signalfd_siginfo
 
 			SIGXFSZ => signal_handler.handle_sigxfsz(self.generic()),
 
-			signal_number @ SIGRTMIN_Kernel ... KernelRealtimeSignalUpperLimit => signal_handler.handle_illegal_sigrt(signal_number as u32, self.generic()),
+			signal_number @ SIGRTMIN_Kernel ..= KernelRealtimeSignalUpperLimit => signal_handler.handle_illegal_sigrt(signal_number as u32, self.generic()),
 
 			// In theory, ssi_pid, ssi_uid, ssi_ptr and ssi_int should all be valid values... in practice, there is no g'tee of this.
-			signal_number @ SIGRTMIN ... SIGRTMAX => signal_handler.handle_sigrt(signal_number as u32, self.generic()),
+			signal_number @ SIGRTMIN ..= SIGRTMAX => signal_handler.handle_sigrt(signal_number as u32, self.generic()),
 
 			signal_number @ _ => signal_handler.handle_illegal_signal(signal_number as u32, self.generic()),
 		}

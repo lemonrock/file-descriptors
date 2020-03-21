@@ -53,6 +53,15 @@ impl VectoredRead for ReceivePipeFileDescriptor
 {
 }
 
+impl PipeFileDescriptor for ReceivePipeFileDescriptor
+{
+	#[inline(always)]
+	fn clone_for_child_process(&self) -> Self
+	{
+		unsafe { transmute_copy(self) }
+	}
+}
+
 impl Read for ReceivePipeFileDescriptor
 {
 	/// This particular implementation can only return an `io::ErrorKind` of:-

@@ -20,7 +20,6 @@ extern "C"
 	/// * `EINVAL`: An invalid value was specified in `how`.
 	/// * `ENOTCONN`: The specified socket is not connected.
 	/// * `ENOTSOCK`: The file descriptor `sockfd` does not refer to a socket.
-	#[inline(always)]
 	pub(crate) fn shutdown(sockfd: RawFd, how: c_int) -> c_int;
 }
 

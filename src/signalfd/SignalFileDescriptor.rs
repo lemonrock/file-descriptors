@@ -110,6 +110,7 @@ impl SignalFileDescriptor
 	#[inline(always)]
 	fn filled_signal_mask() -> sigset_t
 	{
+		#[allow(deprecated)]
 		let mut signal_mask = unsafe { uninitialized() };
 		let result = unsafe {  sigfillset(&mut signal_mask) };
 		if likely!(result == 0)

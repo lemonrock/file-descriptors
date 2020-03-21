@@ -56,6 +56,7 @@ impl<SD: SocketData> StreamingServerListenerSocketFileDescriptor<SD>
 		// Rust bug (as of 1.30) prevents this being a constant.
 		let SocketDataLength: socklen_t = size_of::<SD>() as socklen_t;
 
+		#[allow(deprecated)]
 		let mut peer_address: SD = unsafe { uninitialized() };
 		let mut peer_address_length = SocketDataLength;
 

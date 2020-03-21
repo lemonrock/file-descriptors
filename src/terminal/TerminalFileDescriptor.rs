@@ -144,6 +144,7 @@ impl TerminalFileDescriptor
 	#[inline(always)]
 	fn get_terminal_settings(&self) -> Result<termios, TerminalSettingsError>
 	{
+		#[allow(deprecated)]
 		let mut terminal_options: termios = unsafe { uninitialized() };
 
 		Self::handle_terminal_settings_error(unsafe { tcgetattr(self.as_raw_fd(), &mut terminal_options) }, TerminalSettingsError::NotATerminal)?;

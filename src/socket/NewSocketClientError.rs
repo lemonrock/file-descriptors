@@ -25,7 +25,7 @@ impl Display for NewSocketClientError
 impl error::Error for NewSocketClientError
 {
 	#[inline(always)]
-	fn source(&self) ->  Option<&(error::Error + 'static)>
+	fn source(&self) ->  Option<&(dyn error::Error + 'static)>
 	{
 		use self::NewSocketClientError::*;
 

@@ -12,13 +12,18 @@ use ::libc::EOVERFLOW;
 use ::libc::EROFS;
 use ::libc::ESPIPE;
 use ::libc::ETXTBSY;
+use ::libc::F_GETFL;
+use ::libc::F_SETFL;
+use ::libc::fcntl;
 use ::libc::iovec;
 use ::std::ffi::CString;
+use ::std::mem::transmute_copy;
 
 
 pub(crate) mod syscall;
 
 
+include!("PipeFileDescriptor.rs");
 include!("ReceivePipeFileDescriptor.rs");
 include!("SendPipeFileDescriptor.rs");
 include!("SpliceRecipient.rs");

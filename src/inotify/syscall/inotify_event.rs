@@ -35,6 +35,7 @@ impl inotify_event
 	#[inline(always)]
 	pub(crate) fn unpopulated() -> Self
 	{
+		#[allow(deprecated)]
 		Self
 		{
 			wd: unsafe { uninitialized() },

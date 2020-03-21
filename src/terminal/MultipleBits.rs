@@ -12,7 +12,6 @@ trait MultipleBits: Default + Copy + Into<tcflag_t>
 		Self::transmute_from_clean_mode_flags(mode_flags | Self::Bitmask)
 	}
 
-	#[inline(always)]
 	fn transmute_from_clean_mode_flags(clean_mode_flags: tcflag_t) -> Self;
 
 	#[inline(always)]
